@@ -79,28 +79,28 @@ class HomePage extends StatelessWidget {
         GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
+          crossAxisCount: 4,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
-          childAspectRatio: 1.8,
+          childAspectRatio: 2,
           children: [
             _buildDashboardCard(
               context: context,
-              icon: Icons.people_outline,
+              icon: Icons.circle_notifications_rounded,
               label: 'Users',
               onTap: () => GoRouter.of(context).go('/user-management'),
               color: Colors.blue,
             ),
             _buildDashboardCard(
               context: context,
-              icon: Icons.article_outlined,
-              label: 'Articles',
-              onTap: () {},
-              color: Colors.green,
+              icon: Icons.people_rounded,
+              label: 'Users',
+              onTap: () => GoRouter.of(context).go('/user-management'),
+              color: Colors.blue,
             ),
             _buildDashboardCard(
               context: context,
-              icon: Icons.book_outlined,
+              icon: Icons.format_quote_rounded,
               label: 'Hadith',
               onTap: () => GoRouter.of(context).go('/hadith-management'),
               color: Colors.orange,
@@ -194,20 +194,19 @@ class HomePage extends StatelessWidget {
         color: color.withAlpha(31),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icon, size: 32, color: color),
-              const SizedBox(height: 12),
-              Text(
-                label,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 64, color: color),
+                Text(
+                  label,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(color: color),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -9,16 +9,21 @@ class NotificationManagementPage extends StatefulWidget {
       _NotificationManagementPageState();
 }
 
-class _NotificationManagementPageState extends State<NotificationManagementPage> {
-  final _titleController = TextEditingController();
-  final _bodyController = TextEditingController();
+class _NotificationManagementPageState
+    extends State<NotificationManagementPage> {
+  final _titleController = TextEditingController(text: "أذكار اليوم");
+  final _bodyController = TextEditingController(
+    text:
+        "🙏 أسْتَغْفِرُ اللهَ العَظِيمَ الَّذِي لاَ إلَهَ إلاَّ هُوَ، الحَيُّ القَيُّومُ، وَأتُوبُ إلَيهِ ",
+  );
   final _imageUrlController = TextEditingController();
   final _topicController = TextEditingController();
 
   final List<Map<String, String>> _savedNotifications = [
     {
       'title': 'New Article Alert!',
-      'body': 'Check out our latest article on the importance of daily prayers.',
+      'body':
+          'Check out our latest article on the importance of daily prayers.',
     },
     {
       'title': 'Jummah Reminder',
@@ -35,9 +40,7 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
-      ),
+      appBar: AppBar(title: const Text('Notifications')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -58,13 +61,16 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
             const SizedBox(height: 16),
             TextField(
               controller: _imageUrlController,
-              decoration: const InputDecoration(labelText: 'Image URL (Optional)'),
+              decoration: const InputDecoration(
+                labelText: 'Image URL (Optional)',
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _topicController,
-              decoration:
-                  const InputDecoration(labelText: 'Topic (e.g., news, events)'),
+              decoration: const InputDecoration(
+                labelText: 'Topic (e.g., news, events)',
+              ),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
@@ -95,8 +101,9 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed:
-                  _selectedSavedNotification != null ? _sendNotification : null,
+              onPressed: _selectedSavedNotification != null
+                  ? _sendNotification
+                  : null,
               child: const Text('Send Selected Notification'),
             ),
           ],
@@ -108,9 +115,9 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+      style: Theme.of(
+        context,
+      ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
     );
   }
 

@@ -24,13 +24,6 @@ class CustomDrawer extends StatelessWidget {
               GoRouter.of(context).go('/user-management');
             },
           ),
-          _buildDrawerItem(icon: Icons.article, text: 'Articles', onTap: () {}),
-          _buildDrawerItem(
-            icon: Icons.category,
-            text: 'Categories',
-            onTap: () {},
-          ),
-          _buildDrawerItem(icon: Icons.comment, text: 'Comments', onTap: () {}),
           _buildDrawerItem(
             icon: Icons.notifications,
             text: 'Notifications',

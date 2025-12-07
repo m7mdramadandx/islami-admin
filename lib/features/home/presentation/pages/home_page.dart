@@ -87,9 +87,9 @@ class HomePage extends StatelessWidget {
             _buildDashboardCard(
               context: context,
               icon: Icons.circle_notifications_rounded,
-              label: 'Users',
-              onTap: () => GoRouter.of(context).go('/user-management'),
-              color: Colors.blue,
+              label: 'Notifications',
+              onTap: () => GoRouter.of(context).go('/notification-management'),
+              color: Colors.red,
             ),
             _buildDashboardCard(
               context: context,

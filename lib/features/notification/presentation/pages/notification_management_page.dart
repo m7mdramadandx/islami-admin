@@ -9,8 +9,7 @@ class NotificationManagementPage extends StatefulWidget {
       _NotificationManagementPageState();
 }
 
-class _NotificationManagementPageState
-    extends State<NotificationManagementPage> {
+class _NotificationManagementPageState extends State<NotificationManagementPage> {
   final _titleController = TextEditingController();
   final _bodyController = TextEditingController();
   final _imageUrlController = TextEditingController();
@@ -19,8 +18,7 @@ class _NotificationManagementPageState
   final List<Map<String, String>> _savedNotifications = [
     {
       'title': 'New Article Alert!',
-      'body':
-          'Check out our latest article on the importance of daily prayers.',
+      'body': 'Check out our latest article on the importance of daily prayers.',
     },
     {
       'title': 'Jummah Reminder',
@@ -37,12 +35,28 @@ class _NotificationManagementPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifications')),
+      appBar: AppBar(
+        title: const Text('Notifications'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (!NotificationService.isConfigured())
+              Card(
+                color: Theme.of(context).colorScheme.errorContainer,
+                margin: const EdgeInsets.only(bottom: 20),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    'Warning: FCM Server Key is not configured. Please add your key in `lib/features/notification/data/services/notification_service.dart` to enable notifications.',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onErrorContainer,
+                    ),
+                  ),
+                ),
+              ),
             _buildSectionTitle('Send New Notification'),
             const SizedBox(height: 16),
             TextField(
@@ -58,16 +72,13 @@ class _NotificationManagementPageState
             const SizedBox(height: 16),
             TextField(
               controller: _imageUrlController,
-              decoration: const InputDecoration(
-                labelText: 'Image URL (Optional)',
-              ),
+              decoration: const InputDecoration(labelText: 'Image URL (Optional)'),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _topicController,
-              decoration: const InputDecoration(
-                labelText: 'Topic (e.g., news, events)',
-              ),
+              decoration:
+                  const InputDecoration(labelText: 'Topic (e.g., news, events)'),
             ),
             const SizedBox(height: 24),
             ElevatedButton(
@@ -78,7 +89,7 @@ class _NotificationManagementPageState
             _buildSectionTitle('Send Saved Notification'),
             const SizedBox(height: 16),
             DropdownButtonFormField<Map<String, String>>(
-              initialValue: _selectedSavedNotification,
+              value: _selectedSavedNotification,
               hint: const Text('Select a notification template'),
               items: _savedNotifications.map((notification) {
                 return DropdownMenuItem(
@@ -98,9 +109,8 @@ class _NotificationManagementPageState
             ),
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: _selectedSavedNotification != null
-                  ? _sendNotification
-                  : null,
+              onPressed:
+                  _selectedSavedNotification != null ? _sendNotification : null,
               child: const Text('Send Selected Notification'),
             ),
           ],
@@ -112,9 +122,9 @@ class _NotificationManagementPageState
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: Theme.of(
-        context,
-      ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
     );
   }
 
@@ -147,7 +157,7 @@ class _NotificationManagementPageState
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Notification sent successfully!'),
+          content: Text('Notification simulated successfully! Check the console for details.'),
           backgroundColor: Colors.green,
         ),
       );

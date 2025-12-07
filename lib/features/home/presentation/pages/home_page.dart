@@ -10,8 +10,11 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text('Admin Panel'),
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -22,8 +25,74 @@ class HomePage extends StatelessWidget {
         ],
       ),
       drawer: const CustomDrawer(),
-      body: const Center(
-        child: Text('Welcome to the admin panel!'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          children: [
+            _buildDashboardCard(
+              context: context,
+              icon: Icons.people,
+              label: 'Users',
+              onTap: () {},
+            ),
+            _buildDashboardCard(
+              context: context,
+              icon: Icons.article,
+              label: 'Articles',
+              onTap: () {},
+            ),
+            _buildDashboardCard(
+              context: context,
+              icon: Icons.category,
+              label: 'Categories',
+              onTap: () {},
+            ),
+            _buildDashboardCard(
+              context: context,
+              icon: Icons.comment,
+              label: 'Comments',
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDashboardCard({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 50,
+              color: Theme.of(context).primaryColor,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

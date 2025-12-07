@@ -43,20 +43,6 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (!NotificationService.isConfigured())
-              Card(
-                color: Theme.of(context).colorScheme.errorContainer,
-                margin: const EdgeInsets.only(bottom: 20),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Warning: FCM Server Key is not configured. Please add your key in `lib/features/notification/data/services/notification_service.dart` to enable notifications.',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onErrorContainer,
-                    ),
-                  ),
-                ),
-              ),
             _buildSectionTitle('Send New Notification'),
             const SizedBox(height: 16),
             TextField(
@@ -157,7 +143,7 @@ class _NotificationManagementPageState extends State<NotificationManagementPage>
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Notification simulated successfully! Check the console for details.'),
+          content: Text('Notification sent successfully!'),
           backgroundColor: Colors.green,
         ),
       );

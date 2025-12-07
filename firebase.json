@@ -1,1 +1,6 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"islami-ecc03","appId":"1:173815807932:android:35595babe8d63cfe7935b9","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"islami-ecc03","configurations":{"android":"1:173815807932:android:35595babe8d63cfe7935b9","web":"1:173815807932:web:a1c170fe9f45b5b87935b9"}}}}}}
+{
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20"
+  }
+}

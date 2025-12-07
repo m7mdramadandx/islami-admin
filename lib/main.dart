@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +14,7 @@ import 'package:islami_admin/features/notification/presentation/pages/notificati
 import 'package:islami_admin/features/quran/presentation/pages/quran_management_page.dart';
 import 'package:islami_admin/features/user/presentation/pages/user_management_page.dart';
 import 'package:islami_admin/injection_container.dart' as di;
-import 'package:firebase_core/firebase_core.dart';
+
 import 'firebase_options.dart';
 
 void main() async {
@@ -41,35 +42,62 @@ class IslamiAdmin extends StatelessWidget {
 
     return BlocProvider(
       create: (_) => di.sl<AuthBloc>(),
-      child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            GoRouter.of(context).go('/home');
-          } else if (state is AuthUnauthenticated) {
-            GoRouter.of(context).go('/');
-          }
-        },
-        child: MaterialApp.router(
-          routerConfig: _router,
-          title: 'islami-admin',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: colorScheme,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            textTheme: GoogleFonts.cairoTextTheme(Theme.of(context).textTheme),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 5,
-                shadowColor: colorScheme.primary.withAlpha(102),
+      child: MaterialApp.router(
+        routerConfig: _router,
+        title: 'islami-admin',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: colorScheme,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: GoogleFonts.cairoTextTheme(Theme.of(context).textTheme),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(double.infinity, 50),
+              backgroundColor: colorScheme.primary,
+              foregroundColor: colorScheme.onPrimary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
+              elevation: 5,
+              shadowColor: colorScheme.primary.withAlpha(102),
             ),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: colorScheme.surfaceContainerHighest,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: colorScheme.primary),
+            ),
+          ),
+          iconTheme: IconThemeData(color: colorScheme.primary, size: 24.0),
+          progressIndicatorTheme: ProgressIndicatorThemeData(
+            color: colorScheme.primary,
+          ),
+          switchTheme: SwitchThemeData(
+            thumbColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return colorScheme.primary;
+              }
+              return colorScheme.onSurface.withAlpha(153);
+            }),
+            trackColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return colorScheme.primary.withAlpha(128);
+              }
+              return colorScheme.onSurface.withAlpha(77);
+            }),
+          ),
+          dropdownMenuTheme: DropdownMenuThemeData(
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
               fillColor: colorScheme.surfaceContainerHighest,
@@ -84,42 +112,6 @@ class IslamiAdmin extends StatelessWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: colorScheme.primary),
-              ),
-            ),
-            iconTheme: IconThemeData(color: colorScheme.primary, size: 24.0),
-            progressIndicatorTheme: ProgressIndicatorThemeData(
-              color: colorScheme.primary,
-            ),
-            switchTheme: SwitchThemeData(
-              thumbColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return colorScheme.primary;
-                }
-                return colorScheme.onSurface.withAlpha(153);
-              }),
-              trackColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return colorScheme.primary.withAlpha(128);
-                }
-                return colorScheme.onSurface.withAlpha(77);
-              }),
-            ),
-            dropdownMenuTheme: DropdownMenuThemeData(
-              inputDecorationTheme: InputDecorationTheme(
-                filled: true,
-                fillColor: colorScheme.surfaceContainerHighest,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: colorScheme.primary),
-                ),
               ),
             ),
           ),

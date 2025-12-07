@@ -1,18 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 // IMPORTANT: This is for demonstration purposes only.
 // In a production app, you should use a backend service (like Cloud Functions)
 // to send notifications. Exposing your server key in a client app is a security risk.
-const String _fcmServerKey = 'PASTE_YOUR_FCM_LEGACY_SERVER_KEY_HERE';
+const String _fcmServerKey =
+    'AAAAKHg6v7w:APA91bE3ER8VJHKLhc167s_yXIBpirhoAe_okKDhmrWGWjnlGozlocwnuiRsYhJEMRXNXiPb0BFcK6-VG85CDE2r5tPSG0lkB4ctd3zmp1skHUZBLhez0CGBlnvM37F3811ZZ5cr4bVi';
 
 class NotificationService {
   static const String _fcmUrl = 'https://fcm.googleapis.com/fcm/send';
-
-  static bool isConfigured() {
-    return _fcmServerKey != 'PASTE_YOUR_FCM_LEGACY_SERVER_KEY_HERE';
-  }
 
   static Future<void> sendNotification({
     required String title,
@@ -44,6 +42,7 @@ class NotificationService {
     );
 
     if (response.statusCode != 200) {
+      print('Error sending notification: ${response.body}');
       throw Exception('Error sending notification: ${response.body}');
     }
   }

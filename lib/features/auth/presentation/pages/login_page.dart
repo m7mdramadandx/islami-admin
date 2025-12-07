@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
@@ -21,9 +20,13 @@ class _LoginPageState extends State<LoginPage> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+          } else if (state is AuthAuthenticated) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("Successful login!")));
           }
         },
         builder: (context, state) {
@@ -109,19 +112,19 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildLoginButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        context.read<AuthBloc>().add(LoginEvent(
-              email: _emailController.text,
-              password: _passwordController.text,
-            ));
+        context.read<AuthBloc>().add(
+          LoginEvent(
+            email: _emailController.text,
+            password: _passwordController.text,
+          ),
+        );
       },
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50),
         backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 5,
-        shadowColor: Theme.of(context).primaryColor.withOpacity(0.4),
+        shadowColor: Theme.of(context).primaryColor.withAlpha(102),
       ),
       child: const Text(
         'Login',

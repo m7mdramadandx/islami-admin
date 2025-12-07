@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:islami_admin/features/home/presentation/widgets/custom_drawer.dart';
 
@@ -36,7 +37,9 @@ class HomePage extends StatelessWidget {
               context: context,
               icon: Icons.people,
               label: 'Users',
-              onTap: () {},
+              onTap: () {
+                GoRouter.of(context).go('/user-management');
+              },
             ),
             _buildDashboardCard(
               context: context,
@@ -55,6 +58,14 @@ class HomePage extends StatelessWidget {
               icon: Icons.comment,
               label: 'Comments',
               onTap: () {},
+            ),
+            _buildDashboardCard(
+              context: context,
+              icon: Icons.book,
+              label: 'Hadith',
+              onTap: () {
+                GoRouter.of(context).go('/hadith-management');
+              },
             ),
           ],
         ),

@@ -1,22 +1,31 @@
+import 'dart:async';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:islami_admin/features/auth/presentation/pages/login_page.dart';
+import 'package:islami_admin/features/hadith/presentation/pages/hadith_management_page.dart';
 import 'package:islami_admin/features/home/presentation/pages/home_page.dart';
+import 'package:islami_admin/features/user/presentation/pages/user_management_page.dart';
 import 'package:islami_admin/injection_container.dart' as di;
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  di.init();
-  runApp(const IslamiAdmin());
+  await runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    di.init();
+
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+    runApp(const IslamiAdmin());
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 }
 
 class IslamiAdmin extends StatelessWidget {
@@ -36,7 +45,8 @@ class IslamiAdmin extends StatelessWidget {
         },
         child: MaterialApp.router(
           routerConfig: _router,
-          title: 'Admin Panel',
+          title: 'islami-admin',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -59,6 +69,14 @@ final _router = GoRouter(
     GoRoute(
       path: '/home',
       builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: '/hadith-management',
+      builder: (context, state) => const HadithManagementPage(),
+    ),
+    GoRoute(
+      path: '/user-management',
+      builder: (context, state) => const UserManagementPage(),
     ),
   ],
 );

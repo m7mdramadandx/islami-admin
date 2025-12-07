@@ -1,4 +1,3 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:islami_admin/core/errors/failures.dart';

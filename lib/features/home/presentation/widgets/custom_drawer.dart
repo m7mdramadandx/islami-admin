@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -19,22 +20,23 @@ class CustomDrawer extends StatelessWidget {
           _buildDrawerItem(
             icon: Icons.people,
             text: 'Users',
-            onTap: () {},
+            onTap: () {
+              GoRouter.of(context).go('/user-management');
+            },
           ),
-          _buildDrawerItem(
-            icon: Icons.article,
-            text: 'Articles',
-            onTap: () {},
-          ),
+          _buildDrawerItem(icon: Icons.article, text: 'Articles', onTap: () {}),
           _buildDrawerItem(
             icon: Icons.category,
             text: 'Categories',
             onTap: () {},
           ),
+          _buildDrawerItem(icon: Icons.comment, text: 'Comments', onTap: () {}),
           _buildDrawerItem(
-            icon: Icons.comment,
-            text: 'Comments',
-            onTap: () {},
+            icon: Icons.notifications,
+            text: 'Notifications',
+            onTap: () {
+              GoRouter.of(context).go('/notification-management');
+            },
           ),
           const Divider(),
           _buildDrawerItem(
@@ -51,9 +53,7 @@ class CustomDrawer extends StatelessWidget {
 
   Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-      ),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
       child: Row(
         children: [
           Icon(
@@ -80,10 +80,6 @@ class CustomDrawer extends StatelessWidget {
     required String text,
     required GestureTapCallback onTap,
   }) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(text),
-      onTap: onTap,
-    );
+    return ListTile(leading: Icon(icon), title: Text(text), onTap: onTap);
   }
 }

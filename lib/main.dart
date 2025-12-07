@@ -9,6 +9,7 @@ import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:islami_admin/features/auth/presentation/pages/login_page.dart';
 import 'package:islami_admin/features/hadith/presentation/pages/hadith_management_page.dart';
 import 'package:islami_admin/features/home/presentation/pages/home_page.dart';
+import 'package:islami_admin/features/notification/presentation/pages/notification_management_page.dart';
 import 'package:islami_admin/features/quran/presentation/pages/quran_management_page.dart';
 import 'package:islami_admin/features/user/presentation/pages/user_management_page.dart';
 import 'package:islami_admin/injection_container.dart' as di;
@@ -34,7 +35,9 @@ class IslamiAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = ColorScheme.fromSeed(seedColor: Colors.blue);
+    final ColorScheme colorScheme = ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+    );
 
     return BlocProvider(
       create: (_) => di.sl<AuthBloc>(),
@@ -54,22 +57,22 @@ class IslamiAdmin extends StatelessWidget {
             useMaterial3: true,
             colorScheme: colorScheme,
             visualDensity: VisualDensity.adaptivePlatformDensity,
-            textTheme: GoogleFonts.cairoTextTheme(
-              Theme.of(context).textTheme,
-            ),
+            textTheme: GoogleFonts.cairoTextTheme(Theme.of(context).textTheme),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
                 backgroundColor: colorScheme.primary,
                 foregroundColor: colorScheme.onPrimary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 elevation: 5,
                 shadowColor: colorScheme.primary.withAlpha(102),
               ),
             ),
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
-              fillColor: colorScheme.surfaceVariant,
+              fillColor: colorScheme.surfaceContainerHighest,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -83,31 +86,28 @@ class IslamiAdmin extends StatelessWidget {
                 borderSide: BorderSide(color: colorScheme.primary),
               ),
             ),
-            iconTheme: IconThemeData(
-              color: colorScheme.primary,
-              size: 24.0,
-            ),
+            iconTheme: IconThemeData(color: colorScheme.primary, size: 24.0),
             progressIndicatorTheme: ProgressIndicatorThemeData(
               color: colorScheme.primary,
             ),
             switchTheme: SwitchThemeData(
-              thumbColor: MaterialStateProperty.resolveWith((states) {
-                if (states.contains(MaterialState.selected)) {
+              thumbColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
                   return colorScheme.primary;
                 }
-                return colorScheme.onSurface.withOpacity(0.6);
+                return colorScheme.onSurface.withAlpha(153);
               }),
-              trackColor: MaterialStateProperty.resolveWith((states) {
-                if (states.contains(MaterialState.selected)) {
-                  return colorScheme.primary.withOpacity(0.5);
+              trackColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return colorScheme.primary.withAlpha(128);
                 }
-                return colorScheme.onSurface.withOpacity(0.3);
+                return colorScheme.onSurface.withAlpha(77);
               }),
             ),
             dropdownMenuTheme: DropdownMenuThemeData(
               inputDecorationTheme: InputDecorationTheme(
                 filled: true,
-                fillColor: colorScheme.surfaceVariant,
+                fillColor: colorScheme.surfaceContainerHighest,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -131,14 +131,8 @@ class IslamiAdmin extends StatelessWidget {
 
 final _router = GoRouter(
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const LoginPage(),
-    ),
-    GoRoute(
-      path: '/home',
-      builder: (context, state) => const HomePage(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const LoginPage()),
+    GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(
       path: '/hadith-management',
       builder: (context, state) => const HadithManagementPage(),
@@ -150,6 +144,10 @@ final _router = GoRouter(
     GoRoute(
       path: '/quran-management',
       builder: (context, state) => const QuranManagementPage(),
+    ),
+    GoRoute(
+      path: '/notification-management',
+      builder: (context, state) => const NotificationManagementPage(),
     ),
   ],
 );

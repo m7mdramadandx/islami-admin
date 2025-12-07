@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -37,10 +37,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.mosque,
-                      size: 100,
-                    ),
+                    Icon(Icons.mosque, size: 100),
                     const SizedBox(height: 20),
                     Text(
                       'Islami Admin',
@@ -74,11 +71,11 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         onPressed: () {
                           context.read<AuthBloc>().add(
-                                LoginEvent(
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                ),
-                              );
+                            LoginEvent(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            ),
+                          );
                         },
                         child: const Text(
                           'Login',

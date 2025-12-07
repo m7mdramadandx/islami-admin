@@ -1,4 +1,3 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:islami_admin/core/errors/failures.dart';
@@ -15,12 +14,17 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Stream<UserEntity?> get authStateChanges {
     return remoteDataSource.authStateChanges.map((firebaseUser) {
-      return firebaseUser != null ? UserModel.fromFirebaseUser(firebaseUser) : null;
+      return firebaseUser != null
+          ? UserModel.fromFirebaseUser(firebaseUser)
+          : null;
     });
   }
 
   @override
-  Future<Either<Failure, UserEntity>> login(String email, String password) async {
+  Future<Either<Failure, UserEntity>> login(
+    String email,
+    String password,
+  ) async {
     try {
       final userCredential = await remoteDataSource.login(email, password);
       final user = userCredential.user!;

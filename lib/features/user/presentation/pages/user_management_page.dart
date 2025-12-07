@@ -15,9 +15,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Management'),
-      ),
+      appBar: AppBar(title: const Text('User Management')),
       body: StreamBuilder<List<User>>(
         stream: _userRepository.getUsers(),
         builder: (context, snapshot) {
@@ -41,13 +39,19 @@ class _UserManagementPageState extends State<UserManagementPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (user.isAdmin)
-                        Icon(Icons.shield, color: Theme.of(context).colorScheme.primary),
+                        Icon(
+                          Icons.shield,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () => _showEditUserDialog(user),
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                        icon: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                         onPressed: () => _deleteUser(user.id),
                       ),
                     ],

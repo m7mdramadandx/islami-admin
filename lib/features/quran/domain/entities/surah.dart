@@ -1,4 +1,3 @@
-
 class Surah {
   final int number;
   final String name;

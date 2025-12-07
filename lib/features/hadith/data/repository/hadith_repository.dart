@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:islami_admin/features/hadith/domain/entities/hadith.dart';
 
 class HadithRepository {
-  final CollectionReference _hadithCollection = FirebaseFirestore.instance.collection('hadiths');
+  final CollectionReference _hadithCollection = FirebaseFirestore.instance
+      .collection('hadiths');
 
   Future<void> addHadith(Hadith hadith) async {
     await _hadithCollection.doc(hadith.id).set(hadith.toJson());

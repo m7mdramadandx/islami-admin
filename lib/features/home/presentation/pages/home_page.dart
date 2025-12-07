@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:islami_admin/features/home/presentation/widgets/custom_drawer.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,72 +9,173 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin Panel'),
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: const Text('Dashboard'),
+        centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              context.read<AuthBloc>().add(LogoutEvent());
-            },
+            icon: const Icon(Icons.notifications_none),
+            onPressed: () {},
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: CircleAvatar(
+              // Placeholder for profile picture
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.primary.withAlpha(204),
+              child: const Icon(Icons.person, color: Colors.white),
+            ),
           ),
         ],
       ),
       drawer: const CustomDrawer(),
-      body: Padding(
+      body: ListView(
         padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
+        children: [
+          _buildHeader(context),
+          const SizedBox(height: 24),
+          _buildQuickActions(context),
+          const SizedBox(height: 24),
+          _buildActivityChart(context),
+          const SizedBox(height: 24),
+          _buildStatistics(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Welcome Back, Admin!',
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Here\'s a quick overview of your dashboard.',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: Theme.of(context).textTheme.bodySmall?.color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActions(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Quick Actions',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           crossAxisCount: 2,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
+          childAspectRatio: 1.8,
           children: [
             _buildDashboardCard(
               context: context,
-              icon: Icons.people,
+              icon: Icons.people_outline,
               label: 'Users',
-              onTap: () {
-                GoRouter.of(context).go('/user-management');
-              },
+              onTap: () => GoRouter.of(context).go('/user-management'),
+              color: Colors.blue,
             ),
             _buildDashboardCard(
               context: context,
-              icon: Icons.article,
+              icon: Icons.article_outlined,
               label: 'Articles',
               onTap: () {},
+              color: Colors.green,
             ),
             _buildDashboardCard(
               context: context,
-              icon: Icons.category,
-              label: 'Categories',
-              onTap: () {},
-            ),
-            _buildDashboardCard(
-              context: context,
-              icon: Icons.comment,
-              label: 'Comments',
-              onTap: () {},
-            ),
-            _buildDashboardCard(
-              context: context,
-              icon: Icons.book,
+              icon: Icons.book_outlined,
               label: 'Hadith',
-              onTap: () {
-                GoRouter.of(context).go('/hadith-management');
-              },
+              onTap: () => GoRouter.of(context).go('/hadith-management'),
+              color: Colors.orange,
             ),
             _buildDashboardCard(
               context: context,
-              icon: Icons.mosque,
+              icon: Icons.mosque_outlined,
               label: 'Quran',
-              onTap: () {
-                GoRouter.of(context).go('/quran-management');
-              },
+              onTap: () => GoRouter.of(context).go('/quran-management'),
+              color: Colors.purple,
             ),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget _buildActivityChart(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Recent Activity',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(height: 200, child: SimpleBarChart.withSampleData()),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildStatistics(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Overview',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                context,
+                'Total Users',
+                '1,250',
+                Icons.group,
+                Colors.teal,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                context,
+                'New Comments',
+                '350',
+                Icons.chat_bubble_outline,
+                Colors.red,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -85,32 +184,121 @@ class HomePage extends StatelessWidget {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
+    required Color color,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 50,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: color.withAlpha(31),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 32, color: color),
+              const SizedBox(height: 12),
+              Text(
+                label,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatCard(
+    BuildContext context,
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(icon, color: color, size: 28),
+                const SizedBox(width: 8),
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
+}
+
+/// A simple bar chart to display sample data.
+class SimpleBarChart extends StatelessWidget {
+  final List<ChartData> data;
+
+  const SimpleBarChart(this.data, {super.key});
+
+  factory SimpleBarChart.withSampleData() {
+    return SimpleBarChart([
+      ChartData('Sun', 10),
+      ChartData('Mon', 15),
+      ChartData('Tue', 25),
+      ChartData('Wed', 22),
+      ChartData('Thu', 30),
+      ChartData('Fri', 28),
+      ChartData('Sat', 35),
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: data.map((item) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              width: 20,
+              height: item.value * 4.0, // Scale the bar height
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(4),
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(item.label),
+          ],
+        );
+      }).toList(),
+    );
+  }
+}
+
+class ChartData {
+  final String label;
+  final double value;
+
+  ChartData(this.label, this.value);
 }

@@ -66,5 +66,4 @@ class DefaultFirebaseOptions {
     projectId: 'islami-ecc03',
     storageBucket: 'islami-ecc03.appspot.com',
   );
-
 }

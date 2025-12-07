@@ -1,4 +1,3 @@
-
 class Hadith {
   final String id;
   final String text;
@@ -15,10 +14,6 @@ class Hadith {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'text': text,
-      'narrator': narrator,
-    };
+    return {'id': id, 'text': text, 'narrator': narrator};
   }
 }

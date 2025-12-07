@@ -15,9 +15,7 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hadith Management'),
-      ),
+      appBar: AppBar(title: const Text('Hadith Management')),
       body: StreamBuilder<List<Hadith>>(
         stream: _hadithRepository.getHadiths(),
         builder: (context, snapshot) {
@@ -42,10 +40,14 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.edit),
-                        onPressed: () => _showAddEditHadithDialog(hadith: hadith),
+                        onPressed: () =>
+                            _showAddEditHadithDialog(hadith: hadith),
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
+                        icon: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                         onPressed: () => _deleteHadith(hadith.id),
                       ),
                     ],
@@ -65,7 +67,9 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
 
   void _showAddEditHadithDialog({Hadith? hadith}) {
     final textController = TextEditingController(text: hadith?.text ?? '');
-    final narratorController = TextEditingController(text: hadith?.narrator ?? '');
+    final narratorController = TextEditingController(
+      text: hadith?.narrator ?? '',
+    );
 
     showDialog(
       context: context,
@@ -95,7 +99,9 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
             ElevatedButton(
               onPressed: () {
                 final newHadith = Hadith(
-                  id: hadith?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+                  id:
+                      hadith?.id ??
+                      DateTime.now().millisecondsSinceEpoch.toString(),
                   text: textController.text,
                   narrator: narratorController.text,
                 );

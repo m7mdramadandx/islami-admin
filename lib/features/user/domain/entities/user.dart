@@ -1,11 +1,15 @@
-
 class User {
   final String id;
   final String name;
   final String email;
   final bool isAdmin;
 
-  User({required this.id, required this.name, required this.email, this.isAdmin = false});
+  User({
+    required this.id,
+    required this.name,
+    required this.email,
+    this.isAdmin = false,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -17,11 +21,6 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-      'isAdmin': isAdmin,
-    };
+    return {'id': id, 'name': name, 'email': email, 'isAdmin': isAdmin};
   }
 }

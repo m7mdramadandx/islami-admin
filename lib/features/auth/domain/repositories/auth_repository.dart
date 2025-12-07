@@ -1,4 +1,3 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:islami_admin/core/errors/failures.dart';
 import 'package:islami_admin/features/auth/domain/entities/user_entity.dart';

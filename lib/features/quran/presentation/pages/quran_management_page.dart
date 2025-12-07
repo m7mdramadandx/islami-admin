@@ -30,9 +30,7 @@ class _QuranManagementPageState extends State<QuranManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quran Management'),
-      ),
+      appBar: AppBar(title: const Text('Quran Management')),
       body: FutureBuilder<List<Surah>>(
         future: _surahs,
         builder: (context, snapshot) {
@@ -57,13 +55,9 @@ class _QuranManagementPageState extends State<QuranManagementPage> {
               },
             );
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+            return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),
@@ -79,9 +73,7 @@ class SurahDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(surah.name),
-      ),
+      appBar: AppBar(title: Text(surah.name)),
       body: ListView.builder(
         itemCount: surah.ayahs.length,
         itemBuilder: (context, index) {

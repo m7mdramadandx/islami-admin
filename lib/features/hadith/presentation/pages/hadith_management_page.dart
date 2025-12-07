@@ -41,11 +41,11 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        icon: const Icon(Icons.edit),
                         onPressed: () => _showAddEditHadithDialog(hadith: hadith),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
+                        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                         onPressed: () => _deleteHadith(hadith.id),
                       ),
                     ],

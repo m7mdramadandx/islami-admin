@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
           } else if (state is AuthAuthenticated) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text("Successful login!")));
+            ).showSnackBar(const SnackBar(content: Text("Successful login!")));
           }
         },
         builder: (context, state) {
@@ -40,7 +40,6 @@ class _LoginPageState extends State<LoginPage> {
                     Icon(
                       Icons.mosque,
                       size: 100,
-                      color: Theme.of(context).primaryColor,
                     ),
                     const SizedBox(height: 20),
                     Text(
@@ -48,91 +47,53 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 50),
-                    _buildTextField(
+                    TextField(
                       controller: _emailController,
-                      labelText: 'Email',
-                      icon: Icons.email,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.email),
+                      ),
                     ),
                     const SizedBox(height: 20),
-                    _buildTextField(
+                    TextField(
                       controller: _passwordController,
-                      labelText: 'Password',
-                      icon: Icons.lock,
                       obscureText: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: Icon(Icons.lock),
+                      ),
                     ),
                     const SizedBox(height: 50),
                     if (state is AuthLoading)
                       const CircularProgressIndicator()
                     else
-                      _buildLoginButton(context),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<AuthBloc>().add(
+                                LoginEvent(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                ),
+                              );
+                        },
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-    required IconData icon,
-    bool obscureText = false,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        labelText: labelText,
-        prefixIcon: Icon(icon, color: Theme.of(context).primaryColor),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Theme.of(context).primaryColor),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoginButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        context.read<AuthBloc>().add(
-          LoginEvent(
-            email: _emailController.text,
-            password: _passwordController.text,
-          ),
-        );
-      },
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size(double.infinity, 50),
-        backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 5,
-        shadowColor: Theme.of(context).primaryColor.withAlpha(102),
-      ),
-      child: const Text(
-        'Login',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
       ),
     );
   }

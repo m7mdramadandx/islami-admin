@@ -22,6 +22,7 @@ dependencies:
   firebase_messaging: ^15.2.10
   firebase_crashlytics: ^4.3.10
   bloc: ^9.1.0
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

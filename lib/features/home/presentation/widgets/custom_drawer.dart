@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
@@ -53,22 +52,22 @@ class CustomDrawer extends StatelessWidget {
   Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).colorScheme.primary,
       ),
       child: Row(
         children: [
           Icon(
             Icons.mosque,
             size: 40,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onPrimary,
           ),
           const SizedBox(width: 16),
-          const Text(
+          Text(
             'Islami Admin',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
         ],

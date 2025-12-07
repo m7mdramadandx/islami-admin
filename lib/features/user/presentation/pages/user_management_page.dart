@@ -41,13 +41,13 @@ class _UserManagementPageState extends State<UserManagementPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (user.isAdmin)
-                        const Icon(Icons.shield, color: Colors.blue),
+                        Icon(Icons.shield, color: Theme.of(context).colorScheme.primary),
                       IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        icon: const Icon(Icons.edit),
                         onPressed: () => _showEditUserDialog(user),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
+                        icon: Icon(Icons.delete, color: Theme.of(context).colorScheme.error),
                         onPressed: () => _deleteUser(user.id),
                       ),
                     ],

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -11,11 +10,11 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text('Admin Panel'),
         elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -67,6 +66,14 @@ class HomePage extends StatelessWidget {
                 GoRouter.of(context).go('/hadith-management');
               },
             ),
+            _buildDashboardCard(
+              context: context,
+              icon: Icons.mosque,
+              label: 'Quran',
+              onTap: () {
+                GoRouter.of(context).go('/quran-management');
+              },
+            ),
           ],
         ),
       ),
@@ -92,7 +99,6 @@ class HomePage extends StatelessWidget {
             Icon(
               icon,
               size: 50,
-              color: Theme.of(context).primaryColor,
             ),
             const SizedBox(height: 10),
             Text(

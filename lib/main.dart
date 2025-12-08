@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:islami_admin/core/utils/colors.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:islami_admin/features/auth/presentation/pages/login_page.dart';
+import 'package:islami_admin/features/azkar/presentation/bloc/azkar_bloc.dart';
+import 'package:islami_admin/features/azkar/presentation/pages/azkar_page.dart';
 import 'package:islami_admin/features/hadith/presentation/pages/hadith_management_page.dart';
 import 'package:islami_admin/features/home/presentation/pages/home_page.dart';
 import 'package:islami_admin/features/notification/presentation/pages/notification_management_page.dart';
@@ -36,12 +39,20 @@ class IslamiAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = ColorScheme.fromSeed(
-      seedColor: Colors.blue,
+    final ColorScheme colorScheme = ColorScheme(
+      brightness: Brightness.light,
+      primary: AppColors.colorPrimary,
+      onPrimary: AppColors.whiteSolid,
+      secondary: AppColors.colorSecondary,
+      onSecondary: AppColors.whiteSolid,
+      error: AppColors.failureRed,
+      onError: AppColors.whiteSolid,
+      surface: AppColors.colorBackground,
+      onSurface: AppColors.text,
     );
 
-    return BlocProvider(
-      create: (_) => di.sl<AuthBloc>(),
+    return MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => di.sl<AuthBloc>())],
       child: MaterialApp.router(
         routerConfig: _router,
         title: 'islami-admin',
@@ -65,7 +76,7 @@ class IslamiAdmin extends StatelessWidget {
           ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: colorScheme.surfaceContainerHighest,
+            fillColor: AppColors.natural100,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -88,19 +99,19 @@ class IslamiAdmin extends StatelessWidget {
               if (states.contains(WidgetState.selected)) {
                 return colorScheme.primary;
               }
-              return colorScheme.onSurface.withAlpha(153);
+              return AppColors.natural500;
             }),
             trackColor: WidgetStateProperty.resolveWith((states) {
               if (states.contains(WidgetState.selected)) {
                 return colorScheme.primary.withAlpha(128);
               }
-              return colorScheme.onSurface.withAlpha(77);
+              return AppColors.natural200;
             }),
           ),
           dropdownMenuTheme: DropdownMenuThemeData(
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
-              fillColor: colorScheme.surfaceContainerHighest,
+              fillColor: AppColors.natural100,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -140,6 +151,13 @@ final _router = GoRouter(
     GoRoute(
       path: '/notification-management',
       builder: (context, state) => const NotificationManagementPage(),
+    ),
+    GoRoute(
+      path: '/azkar-management',
+      builder: (context, state) => BlocProvider(
+        create: (_) => di.sl<AzkarBloc>(),
+        child: const AzkarPage(),
+      ),
     ),
   ],
 );

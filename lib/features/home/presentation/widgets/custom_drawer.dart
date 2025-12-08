@@ -1,42 +1,73 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  const CustomDrawer({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Column(
+      child: ListView(
+        padding: EdgeInsets.zero,
         children: [
-          _buildDrawerHeader(context),
-          _buildDrawerItem(
-            icon: Icons.dashboard,
-            text: 'Dashboard',
-            onTap: () => Navigator.of(context).pop(),
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text(
+              'Islami Admin',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
           ),
           _buildDrawerItem(
-            icon: Icons.people,
-            text: 'Users',
-            onTap: () {
-              GoRouter.of(context).go('/user-management');
-            },
+            context,
+            icon: Icons.home,
+            text: 'Home',
+            onTap: () => context.go('/home'),
           ),
           _buildDrawerItem(
+            context,
+            icon: Icons.book,
+            text: 'Quran Management',
+            onTap: () => context.go('/quran-management'),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.read_more, // Placeholder for Hadith
+            text: 'Hadith Management',
+            onTap: () => context.go('/hadith-management'),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.person,
+            text: 'User Management',
+            onTap: () => context.go('/user-management'),
+          ),
+          _buildDrawerItem(
+            context,
             icon: Icons.notifications,
-            text: 'Notifications',
-            onTap: () {
-              GoRouter.of(context).go('/notification-management');
-            },
+            text: 'Notification',
+            onTap: () => context.go('/notification-management'),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.shield, // Placeholder for Azkar
+            text: 'Azkar Management',
+            onTap: () => context.go('/azkar-management'),
           ),
           const Divider(),
           _buildDrawerItem(
+            context,
             icon: Icons.logout,
             text: 'Logout',
             onTap: () {
-              context.read<AuthBloc>().add(LogoutEvent());
+              // Handle logout
             },
           ),
         ],
@@ -44,35 +75,11 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerHeader(BuildContext context) {
-    return DrawerHeader(
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
-      child: Row(
-        children: [
-          Icon(
-            Icons.mosque,
-            size: 40,
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
-          const SizedBox(width: 16),
-          Text(
-            'Islami Admin',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-          ),
-        ],
-      ),
+  Widget _buildDrawerItem(BuildContext context, {required IconData icon, required String text, required GestureTapCallback onTap}) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(text),
+      onTap: onTap,
     );
-  }
-
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String text,
-    required GestureTapCallback onTap,
-  }) {
-    return ListTile(leading: Icon(icon), title: Text(text), onTap: onTap);
   }
 }

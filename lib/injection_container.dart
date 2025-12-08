@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:islami_admin/features/auth/data/data_sources/auth_remote_data_source.dart';
@@ -7,10 +8,17 @@ import 'package:islami_admin/features/auth/domain/usecases/get_auth_state_change
 import 'package:islami_admin/features/auth/domain/usecases/login.dart';
 import 'package:islami_admin/features/auth/domain/usecases/logout.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:islami_admin/features/azkar/azkar_injection.dart';
 
 final sl = GetIt.instance;
 
 void init() {
+  // Features
+  initAuthFeature();
+  initAzkarFeature();
+}
+
+void initAuthFeature() {
   // Blocs
   sl.registerFactory(
     () => AuthBloc(

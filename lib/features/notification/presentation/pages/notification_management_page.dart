@@ -81,7 +81,6 @@ class _NotificationManagementPageState
             _buildSectionTitle('Send Saved Notification'),
             const SizedBox(height: 16),
             DropdownButtonFormField<Map<String, String>>(
-              value: _selectedSavedNotification,
               hint: const Text('Select a notification template'),
               items: _savedNotifications.map((notification) {
                 return DropdownMenuItem(

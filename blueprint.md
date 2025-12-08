@@ -1,28 +1,54 @@
-# Project Blueprint: Islami Admin Dashboard
+
+# Project Blueprint
 
 ## Overview
 
-This document outlines the design and features of the Islami Admin Dashboard, a comprehensive tool for managing the content and users of the Islami application.
+This document outlines the style, design, and features of the Islami Admin Flutter application. It serves as a single source of truth for the application's architecture and capabilities.
 
 ## Style and Design
 
-*   **Theme:** Modern, clean, and professional with a consistent color scheme and typography.
-*   **Layout:** Responsive and intuitive, with a focus on ease of use and accessibility.
-*   **Components:** Custom-designed widgets for cards, charts, and navigation elements.
+- **Theme**: Material 3 with a consistent color scheme and typography.
+- **Color Palette**: Primary color seeded from `Colors.deepPurple`.
+- **Typography**: `google_fonts` package is used for custom fonts (`Oswald`, `Roboto`, `Open Sans`).
+- **Layout**: Clean, responsive, and mobile-first design.
+- **Iconography**: `flutter_svg` is used for scalable and high-quality vector graphics.
 
-## Features
+## Existing Features
 
-*   **Dashboard:** A central hub for monitoring key metrics, accessing quick actions, and visualizing recent activity.
-*   **User Management:** A comprehensive interface for managing users, including viewing profiles, editing permissions, and monitoring activity.
-*   **Content Management:** A suite of tools for managing articles, categories, comments, hadith, and Quranic content.
-*   **Notifications:** A system for sending targeted notifications to users based on their interests and engagement.
+- **Authentication**: Firebase Auth for user sign-in.
+- **Quran**: Feature to browse and read the Quran.
+- **Notifications**:
+  - A UI to manage and send FCM notifications.
+  - A backend Cloud Function (`sendFcmNotification`) to handle the message sending logic.
 
-## Current Task: Redesign the Dashboard Page
+## Current Task: Azkar Feature
 
-*   **Objective:** To create a more modern, visually appealing, and informative dashboard.
-*   **Plan:**
-    *   Replace the existing `GridView` with a more flexible `ListView`.
-    *   Introduce new, more visually appealing card widgets with icons, titles, and descriptions.
-    *   Add a header section with a welcome message and a summary of key metrics.
-    *   Incorporate a chart to visualize user registrations over time.
-    *   Create a new chart widget to display a simple bar chart.
+### Plan
+
+1.  **Add Dependencies**: Add `firebase_storage` to `pubspec.yaml` for file operations in Firebase Storage.
+2.  **Create Feature Structure**:
+    - Create a new feature directory: `lib/features/azkar`.
+    - Set up the standard BLoC architecture:
+        - `data`: `datasources` and `repositories`.
+        - `domain`: `repositories` and `usecases`.
+        - `presentation`: `bloc` and `pages`.
+3.  **Implement Data Layer**:
+    - **`AzkarRemoteDataSource`**:
+        - A method to download the `azkar.json` file from `gs://islami-ecc03.appspot.com/json/azkar.json`.
+        - A method to upload the modified JSON string back to the same path, overwriting the existing file.
+4.  **Implement Domain Layer**:
+    - **`AzkarRepository`**: An abstract class defining the contract for fetching and saving Azkar data.
+    - **Usecases**: `GetAzkar` and `SaveAzkar` to handle the business logic.
+5.  **Implement Presentation Layer (BLoC & UI)**:
+    - **`AzkarBloc`**: Manage the state of the feature (`AzkarInitial`, `AzkarLoading`, `AzkarLoaded`, `AzkarSaving`, `AzkarError`).
+    - **`AzkarPage`**:
+        - A `Scaffold` with an `AppBar`.
+        - A `BlocBuilder` to react to state changes.
+        - Display a `CircularProgressIndicator` while loading or saving.
+        - Use a `TextField` with a `TextEditingController` to display and edit the fetched JSON content.
+        - An `IconButton` in the `AppBar` to trigger the save event.
+        - The page will automatically fetch the data on load.
+6.  **Integrate Navigation**:
+    - Add a new `GoRoute` for `/azkar` in the main router configuration.
+    - Add a navigation element (e.g., a button or a list tile) in the UI to navigate to the new Azkar page.
+

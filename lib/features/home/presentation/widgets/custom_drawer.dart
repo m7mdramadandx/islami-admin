@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -27,39 +29,45 @@ class CustomDrawer extends StatelessWidget {
           ),
           _buildDrawerItem(
             context,
-            icon: Icons.home,
+            icon: Icons.home_outlined,
             text: 'Home',
             onTap: () => context.go('/home'),
           ),
           _buildDrawerItem(
             context,
-            icon: Icons.book,
+            icon: Icons.book_outlined,
             text: 'Quran Management',
             onTap: () => context.go('/quran-management'),
           ),
           _buildDrawerItem(
             context,
-            icon: Icons.read_more, // Placeholder for Hadith
+            icon: Icons.format_quote_outlined,
             text: 'Hadith Management',
             onTap: () => context.go('/hadith-management'),
           ),
           _buildDrawerItem(
             context,
-            icon: Icons.person,
+            icon: Icons.people_outline,
             text: 'User Management',
             onTap: () => context.go('/user-management'),
           ),
           _buildDrawerItem(
             context,
-            icon: Icons.notifications,
+            icon: Icons.notifications_outlined,
             text: 'Notification',
             onTap: () => context.go('/notification-management'),
           ),
           _buildDrawerItem(
             context,
-            icon: Icons.shield, // Placeholder for Azkar
+            icon: Icons.spa_outlined,
             text: 'Azkar Management',
-            onTap: () => context.go('/azkar-management'),
+            onTap: () => context.go('/azkar'),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.handshake_outlined,
+            text: 'Duas Management',
+            onTap: () => context.go('/duas'),
           ),
           const Divider(),
           _buildDrawerItem(
@@ -67,7 +75,8 @@ class CustomDrawer extends StatelessWidget {
             icon: Icons.logout,
             text: 'Logout',
             onTap: () {
-              // Handle logout
+              context.read<AuthBloc>().add(LogoutEvent());
+              context.go('/');
             },
           ),
         ],

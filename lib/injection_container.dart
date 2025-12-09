@@ -9,6 +9,7 @@ import 'package:islami_admin/features/auth/domain/usecases/login.dart';
 import 'package:islami_admin/features/auth/domain/usecases/logout.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:islami_admin/features/azkar/azkar_injection.dart';
+import 'package:islami_admin/features/duas/duas_injection.dart';
 
 final sl = GetIt.instance;
 
@@ -16,6 +17,7 @@ void init() {
   // Features
   initAuthFeature();
   initAzkarFeature();
+  initDuasFeature();
 }
 
 void initAuthFeature() {

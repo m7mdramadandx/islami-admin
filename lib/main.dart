@@ -1,21 +1,14 @@
+
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:islami_admin/core/routing/app_router.dart';
 import 'package:islami_admin/core/utils/colors.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:islami_admin/features/auth/presentation/pages/login_page.dart';
-import 'package:islami_admin/features/azkar/presentation/bloc/azkar_bloc.dart';
-import 'package:islami_admin/features/azkar/presentation/pages/azkar_page.dart';
-import 'package:islami_admin/features/hadith/presentation/pages/hadith_management_page.dart';
-import 'package:islami_admin/features/home/presentation/pages/home_page.dart';
-import 'package:islami_admin/features/notification/presentation/pages/notification_management_page.dart';
-import 'package:islami_admin/features/quran/presentation/pages/quran_management_page.dart';
-import 'package:islami_admin/features/user/presentation/pages/user_management_page.dart';
 import 'package:islami_admin/injection_container.dart' as di;
 
 import 'firebase_options.dart';
@@ -52,9 +45,11 @@ class IslamiAdmin extends StatelessWidget {
     );
 
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => di.sl<AuthBloc>())],
+      providers: [
+        BlocProvider(create: (_) => di.sl<AuthBloc>()),
+      ],
       child: MaterialApp.router(
-        routerConfig: _router,
+        routerConfig: router,
         title: 'islami-admin',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -131,33 +126,3 @@ class IslamiAdmin extends StatelessWidget {
     );
   }
 }
-
-final _router = GoRouter(
-  routes: [
-    GoRoute(path: '/', builder: (context, state) => const LoginPage()),
-    GoRoute(path: '/home', builder: (context, state) => const HomePage()),
-    GoRoute(
-      path: '/hadith-management',
-      builder: (context, state) => const HadithManagementPage(),
-    ),
-    GoRoute(
-      path: '/user-management',
-      builder: (context, state) => const UserManagementPage(),
-    ),
-    GoRoute(
-      path: '/quran-management',
-      builder: (context, state) => const QuranManagementPage(),
-    ),
-    GoRoute(
-      path: '/notification-management',
-      builder: (context, state) => const NotificationManagementPage(),
-    ),
-    GoRoute(
-      path: '/azkar-management',
-      builder: (context, state) => BlocProvider(
-        create: (_) => di.sl<AzkarBloc>(),
-        child: const AzkarPage(),
-      ),
-    ),
-  ],
-);

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:islami_admin/features/home/presentation/widgets/custom_drawer.dart';
@@ -111,6 +112,20 @@ class HomePage extends StatelessWidget {
               label: 'Quran',
               onTap: () => GoRouter.of(context).go('/quran-management'),
               color: Colors.purple,
+            ),
+            _buildDashboardCard(
+              context: context,
+              icon: Icons.spa_outlined, 
+              label: 'Azkar',
+              onTap: () => GoRouter.of(context).go('/azkar'),
+              color: Colors.cyan,
+            ),
+            _buildDashboardCard(
+              context: context,
+              icon: Icons.handshake_outlined, 
+              label: 'Duas',
+              onTap: () => GoRouter.of(context).go('/duas'),
+              color: Colors.green,
             ),
           ],
         ),

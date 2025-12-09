@@ -1,58 +1,58 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:islami_admin/features/azkar/presentation/bloc/azkar_bloc.dart';
-import 'package:islami_admin/features/azkar/presentation/bloc/azkar_event.dart';
-import 'package:islami_admin/features/azkar/presentation/bloc/azkar_state.dart';
+import 'package:islami_admin/features/duas/presentation/bloc/duas_bloc.dart';
+import 'package:islami_admin/features/duas/presentation/bloc/duas_event.dart';
+import 'package:islami_admin/features/duas/presentation/bloc/duas_state.dart';
 import 'package:islami_admin/features/home/presentation/widgets/custom_drawer.dart';
 
-class AzkarPage extends StatefulWidget {
-  const AzkarPage({super.key});
+class DuasPage extends StatefulWidget {
+  const DuasPage({super.key});
 
   @override
-  State<AzkarPage> createState() => _AzkarPageState();
+  State<DuasPage> createState() => _DuasPageState();
 }
 
-class _AzkarPageState extends State<AzkarPage> {
+class _DuasPageState extends State<DuasPage> {
   final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    context.read<AzkarBloc>().add(FetchAzkar());
+    context.read<DuasBloc>().add(FetchDuas());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Azkar'),
+        title: const Text('Duas'),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: () {
-              context.read<AzkarBloc>().add(SaveAzkarEvent(_controller.text));
+              context.read<DuasBloc>().add(SaveDuasEvent(_controller.text));
             },
           ),
         ],
       ),
       drawer: const CustomDrawer(),
-      body: BlocConsumer<AzkarBloc, AzkarState>(
+      body: BlocConsumer<DuasBloc, DuasState>(
         listener: (context, state) {
-          if (state is AzkarLoaded) {
+          if (state is DuasLoaded) {
             _controller.text = state.content;
-          } else if (state is AzkarError) {
+          } else if (state is DuasError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
-          } else if (state is AzkarSaved) {
+          } else if (state is DuasSaved) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Azkar saved successfully!')),
+              const SnackBar(content: Text('Duas saved successfully!')),
             );
           }
         },
         builder: (context, state) {
-          if (state is AzkarLoading) {
+          if (state is DuasLoading) {
             return const Center(child: CircularProgressIndicator());
           }
           return Padding(

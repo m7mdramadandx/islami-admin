@@ -1,6 +1,16 @@
-# myapp
 
-A new Flutter project.
+# Islami Admin
+
+This is the admin panel for the Islami app. It is a Flutter application that allows admins to manage the content of the app.
+
+## Features
+
+- **Quran Management:** Manage the Quranic text and translations.
+- **Hadith Management:** Manage the hadith collections.
+- **User Management:** Manage users and their roles.
+- **Notification Management:** Send notifications to users.
+- **Azkar Management:** Manage the azkar (remembrances).
+- **Duas Management:** Manage the duas (supplications).
 
 ## Getting Started
 

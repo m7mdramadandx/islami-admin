@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:islami_admin/features/auth/presentation/pages/login_page.dart';
@@ -11,18 +10,13 @@ import 'package:islami_admin/features/home/presentation/pages/home_page.dart';
 import 'package:islami_admin/features/notification/presentation/pages/notification_management_page.dart';
 import 'package:islami_admin/features/quran/presentation/pages/quran_management_page.dart';
 import 'package:islami_admin/features/user/presentation/pages/user_management_page.dart';
+import 'package:islami_admin/features/feedback/presentation/pages/feedback_page.dart';
 import 'package:islami_admin/injection_container.dart' as di;
 
 final router = GoRouter(
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const LoginPage(),
-    ),
-    GoRoute(
-      path: '/home',
-      builder: (context, state) => const HomePage(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const LoginPage()),
+    GoRoute(path: '/home', builder: (context, state) => const HomePage()),
     GoRoute(
       path: '/hadith-management',
       builder: (context, state) => const HadithManagementPage(),
@@ -38,6 +32,10 @@ final router = GoRouter(
     GoRoute(
       path: '/notification-management',
       builder: (context, state) => const NotificationManagementPage(),
+    ),
+    GoRoute(
+      path: '/feedback',
+      builder: (context, state) => const FeedbackPage(),
     ),
     GoRoute(
       path: '/azkar',

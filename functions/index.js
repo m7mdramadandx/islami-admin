@@ -1,23 +1,11 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
-// Initialize the Firebase Admin SDK. This is required to send notifications.
+// Initialize the Firebase Admin SDK.
 admin.initializeApp();
 
 /**
  * A callable Cloud Function to send FCM notifications.
- *
- * This function is invoked from the Flutter app.
- * It constructs and sends a notification using the Firebase Admin SDK.
- * This approach is secure because the FCM Server Key is never exposed to the client.
- *
- * @param {object} data - The data passed from the client app.
- * @param {string} data.title - The title of the notification.
- * @param {string} data.body - The body of the notification.
- * @param {string} [data.imageUrl] - An optional URL for an image in the notification.
- * @param {string} [data.topic] - The topic to send the notification to. Defaults to 'all_users'.
- * @param {functions.https.CallableContext} context - The context of the function call.
- * @returns {Promise<{success: boolean, messageId?: string, error?: string}>} - A promise that resolves with the result.
  */
 exports.sendFcmNotification = functions.https.onCall(async (data, context) => {
   // 1. Validate the request data
@@ -30,7 +18,7 @@ exports.sendFcmNotification = functions.https.onCall(async (data, context) => {
   }
 
   // 2. Define the notification target
-  const targetTopic = topic && topic.isNotEmpty ? topic : "all_users";
+  const targetTopic = (topic && topic.trim().length > 0) ? topic : "all_users";
 
   // 3. Construct the FCM message payload
   const message = {
@@ -40,14 +28,13 @@ exports.sendFcmNotification = functions.https.onCall(async (data, context) => {
     },
     // Add image to notification if provided
     ...(imageUrl && {android: {notification: {imageUrl: imageUrl}}}),
-    // Add APNS (Apple Push Notification Service) specific payload for image
     ...(imageUrl && {
       apns: {payload: {aps: {"mutable-content": 1}, fcm_options: {image: imageUrl}}},
     }),
     topic: targetTopic,
   };
 
-  functions.logger.info("Attempting to send FCM message:", message);
+  functions.logger.info("Attempting to send FCM message to topic:", targetTopic);
 
   // 4. Send the message using the Admin SDK
   try {
@@ -55,11 +42,18 @@ exports.sendFcmNotification = functions.https.onCall(async (data, context) => {
     functions.logger.info("Successfully sent message:", response);
     return {success: true, messageId: response};
   } catch (error) {
-    functions.logger.error("Error sending message:", error);
+    // Log the full error object for debugging in Firebase Console
+    functions.logger.error("FCM Send Error Details:", {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+    });
+
+    // Throw a more descriptive error to the client
     throw new functions.https.HttpsError(
         "internal",
-        "Error sending notification",
-        error,
+        `FCM Error: [${error.code}] ${error.message}`,
+        {details: error.message}
     );
   }
 });

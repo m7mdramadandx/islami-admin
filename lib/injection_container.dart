@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:islami_admin/features/auth/data/data_sources/auth_remote_data_source.dart';
@@ -10,6 +9,7 @@ import 'package:islami_admin/features/auth/domain/usecases/logout.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:islami_admin/features/azkar/azkar_injection.dart';
 import 'package:islami_admin/features/duas/duas_injection.dart';
+import 'package:islami_admin/features/feedback/feedback_injection.dart';
 
 final sl = GetIt.instance;
 
@@ -18,6 +18,7 @@ void init() {
   initAuthFeature();
   initAzkarFeature();
   initDuasFeature();
+  initFeedbackFeature();
 }
 
 void initAuthFeature() {

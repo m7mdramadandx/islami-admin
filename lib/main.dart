@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -14,7 +13,7 @@ import 'package:islami_admin/injection_container.dart' as di;
 import 'firebase_options.dart';
 
 void main() async {
-  await runZonedGuarded(() async {
+  runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -45,9 +44,7 @@ class IslamiAdmin extends StatelessWidget {
     );
 
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => di.sl<AuthBloc>()),
-      ],
+      providers: [BlocProvider(create: (_) => di.sl<AuthBloc>())],
       child: MaterialApp.router(
         routerConfig: router,
         title: 'islami-admin',

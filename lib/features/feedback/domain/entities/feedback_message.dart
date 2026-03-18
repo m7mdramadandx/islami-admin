@@ -19,6 +19,29 @@ class FeedbackMessage extends Equatable {
     required this.msg,
   });
 
+  factory FeedbackMessage.fromFirestore(Map<String, dynamic> json, String id) {
+    return FeedbackMessage(
+      id: id,
+      appVersion: json['app_version'] ?? '',
+      deviceName: json['deviceName'] ?? json['device_name'] ?? 'Unknown',
+      email: json['email'] ?? 'No Email',
+      phone: json['phone'] ?? 'No Phone',
+      date: json['date'] ?? '',
+      msg: json['msg'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'app_version': appVersion,
+      'deviceName': deviceName,
+      'email': email,
+      'phone': phone,
+      'date': date,
+      'msg': msg,
+    };
+  }
+
   @override
   List<Object?> get props => [
     id,

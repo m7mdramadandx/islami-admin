@@ -46,7 +46,7 @@ class IslamiAdmin extends StatelessWidget {
     return MultiBlocProvider(
       providers: [BlocProvider(create: (_) => di.sl<AuthBloc>())],
       child: MaterialApp.router(
-        routerConfig: router,
+        routerConfig: AppRouter.router, // Changed this line
         title: 'islami-admin',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

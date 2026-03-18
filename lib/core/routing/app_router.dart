@@ -5,51 +5,53 @@ import 'package:islami_admin/features/azkar/presentation/bloc/azkar_bloc.dart';
 import 'package:islami_admin/features/azkar/presentation/pages/azkar_page.dart';
 import 'package:islami_admin/features/duas/presentation/bloc/duas_bloc.dart';
 import 'package:islami_admin/features/duas/presentation/pages/duas_page.dart';
+import 'package:islami_admin/features/feedback/presentation/pages/feedback_page.dart';
 import 'package:islami_admin/features/hadith/presentation/pages/hadith_management_page.dart';
 import 'package:islami_admin/features/home/presentation/pages/home_page.dart';
 import 'package:islami_admin/features/notification/presentation/pages/notification_management_page.dart';
 import 'package:islami_admin/features/quran/presentation/pages/quran_management_page.dart';
 import 'package:islami_admin/features/user/presentation/pages/user_management_page.dart';
-import 'package:islami_admin/features/feedback/presentation/pages/feedback_page.dart';
 import 'package:islami_admin/injection_container.dart' as di;
 
-final router = GoRouter(
-  routes: [
-    GoRoute(path: '/', builder: (context, state) => const LoginPage()),
-    GoRoute(path: '/home', builder: (context, state) => const HomePage()),
-    GoRoute(
-      path: '/hadith-management',
-      builder: (context, state) => const HadithManagementPage(),
-    ),
-    GoRoute(
-      path: '/user-management',
-      builder: (context, state) => const UserManagementPage(),
-    ),
-    GoRoute(
-      path: '/quran-management',
-      builder: (context, state) => const QuranManagementPage(),
-    ),
-    GoRoute(
-      path: '/notification-management',
-      builder: (context, state) => const NotificationManagementPage(),
-    ),
-    GoRoute(
-      path: '/feedback',
-      builder: (context, state) => const FeedbackPage(),
-    ),
-    GoRoute(
-      path: '/azkar',
-      builder: (context, state) => BlocProvider(
-        create: (_) => di.sl<AzkarBloc>(),
-        child: const AzkarPage(),
+class AppRouter {
+  static final router = GoRouter(
+    routes: [
+      GoRoute(path: '/', builder: (context, state) => const LoginPage()),
+      GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: '/hadith-management',
+        builder: (context, state) => const HadithManagementPage(),
       ),
-    ),
-    GoRoute(
-      path: '/duas',
-      builder: (context, state) => BlocProvider(
-        create: (_) => di.sl<DuasBloc>(),
-        child: const DuasPage(),
+      GoRoute(
+        path: '/user-management',
+        builder: (context, state) => const UserManagementPage(),
       ),
-    ),
-  ],
-);
+      GoRoute(
+        path: '/quran-management',
+        builder: (context, state) => const QuranManagementPage(),
+      ),
+      GoRoute(
+        path: '/notification-management',
+        builder: (context, state) => const NotificationManagementPage(),
+      ),
+      GoRoute(
+        path: '/feedback',
+        builder: (context, state) => const FeedbackPage(),
+      ),
+      GoRoute(
+        path: '/azkar',
+        builder: (context, state) => BlocProvider(
+          create: (_) => di.sl<AzkarBloc>(),
+          child: const AzkarPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/duas',
+        builder: (context, state) => BlocProvider(
+          create: (_) => di.sl<DuasBloc>(),
+          child: const DuasPage(),
+        ),
+      ),
+    ],
+  );
+}

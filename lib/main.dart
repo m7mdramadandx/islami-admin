@@ -31,92 +31,94 @@ class IslamiAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = ColorScheme(
-      brightness: Brightness.light,
+    final ColorScheme colorScheme = ColorScheme.fromSeed(
+      seedColor: AppColors.colorPrimary,
       primary: AppColors.colorPrimary,
-      onPrimary: AppColors.whiteSolid,
-      secondary: AppColors.colorSecondary,
-      onSecondary: AppColors.whiteSolid,
+      secondary: AppColors.colorAccent,
+      surface: Colors.white,
+      background: AppColors.colorBackground,
       error: AppColors.failureRed,
-      onError: AppColors.whiteSolid,
-      surface: AppColors.colorBackground,
-      onSurface: AppColors.text,
+      brightness: Brightness.light,
     );
 
     return MultiBlocProvider(
       providers: [BlocProvider(create: (_) => di.sl<AuthBloc>())],
       child: MaterialApp.router(
-        routerConfig: AppRouter.router, // Changed this line
-        title: 'islami-admin',
+        routerConfig: AppRouter.router,
+        title: 'Islami Admin',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: colorScheme,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.cairoTextTheme(Theme.of(context).textTheme),
+          scaffoldBackgroundColor: colorScheme.background,
+          textTheme: GoogleFonts.plusJakartaSansTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.white,
+            foregroundColor: AppColors.colorPrimary,
+            elevation: 0,
+            centerTitle: false,
+            titleTextStyle: GoogleFonts.plusJakartaSans(
+              color: AppColors.colorPrimary,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+            iconTheme: const IconThemeData(color: AppColors.colorPrimary),
+          ),
+          cardTheme: CardThemeData(
+            color: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: Colors.grey.shade200),
+            ),
+          ),
+          drawerTheme: const DrawerThemeData(
+            backgroundColor: Colors.white,
+            elevation: 0,
+          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 50),
-              backgroundColor: colorScheme.primary,
-              foregroundColor: colorScheme.onPrimary,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              elevation: 5,
-              shadowColor: colorScheme.primary.withAlpha(102),
+              backgroundColor: AppColors.colorPrimary,
+              foregroundColor: Colors.white,
+              textStyle: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
             ),
           ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: AppColors.natural100,
+            fillColor: Colors.grey.shade50,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: BorderSide(color: Colors.grey.shade200),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: BorderSide(color: Colors.grey.shade200),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: colorScheme.primary),
-            ),
-          ),
-          iconTheme: IconThemeData(color: colorScheme.primary, size: 24.0),
-          progressIndicatorTheme: ProgressIndicatorThemeData(
-            color: colorScheme.primary,
-          ),
-          switchTheme: SwitchThemeData(
-            thumbColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.selected)) {
-                return colorScheme.primary;
-              }
-              return AppColors.natural500;
-            }),
-            trackColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.selected)) {
-                return colorScheme.primary.withAlpha(128);
-              }
-              return AppColors.natural200;
-            }),
-          ),
-          dropdownMenuTheme: DropdownMenuThemeData(
-            inputDecorationTheme: InputDecorationTheme(
-              filled: true,
-              fillColor: AppColors.natural100,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: colorScheme.primary),
+              borderSide: const BorderSide(
+                color: AppColors.colorPrimary,
+                width: 2,
               ),
             ),
+            labelStyle: GoogleFonts.plusJakartaSans(
+              color: Colors.grey.shade600,
+            ),
+            hintStyle: GoogleFonts.plusJakartaSans(color: Colors.grey.shade400),
           ),
         ),
       ),

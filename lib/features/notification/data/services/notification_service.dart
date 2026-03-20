@@ -44,6 +44,14 @@ class NotificationService {
         'Error calling Cloud Function: ${e.code} - ${e.message}',
         error: e,
       );
+      if (e.code == 'permission-denied' &&
+          (e.message?.contains('cloudmessaging.messages.create') ?? false)) {
+        throw Exception(
+          'Notification failed: the backend service account is missing FCM '
+          'permission (cloudmessaging.messages.create). Update IAM roles in '
+          'Google Cloud for the Functions runtime account.',
+        );
+      }
       throw Exception('Failed to send notification: ${e.message}');
     } catch (e) {
       developer.log('An unexpected error occurred: $e', error: e);

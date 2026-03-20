@@ -7,6 +7,8 @@ import 'package:islami_admin/features/duas/presentation/bloc/duas_bloc.dart';
 import 'package:islami_admin/features/duas/presentation/pages/duas_page.dart';
 import 'package:islami_admin/features/feedback/presentation/pages/feedback_page.dart';
 import 'package:islami_admin/features/hadith/presentation/pages/hadith_management_page.dart';
+import 'package:islami_admin/features/home/presentation/bloc/home_bloc.dart';
+import 'package:islami_admin/features/home/presentation/bloc/home_event.dart';
 import 'package:islami_admin/features/home/presentation/pages/home_page.dart';
 import 'package:islami_admin/features/notification/presentation/pages/notification_management_page.dart';
 import 'package:islami_admin/features/quran/presentation/pages/quran_management_page.dart';
@@ -17,7 +19,13 @@ class AppRouter {
   static final router = GoRouter(
     routes: [
       GoRoute(path: '/', builder: (context, state) => const LoginPage()),
-      GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: '/home',
+        builder: (context, state) => BlocProvider(
+          create: (_) => di.sl<HomeBloc>()..add(GetHomeStatsEvent()),
+          child: const HomePage(),
+        ),
+      ),
       GoRoute(
         path: '/hadith-management',
         builder: (context, state) => const HadithManagementPage(),

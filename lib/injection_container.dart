@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:islami_admin/features/auth/data/data_sources/auth_remote_data_source.dart';
@@ -10,15 +11,21 @@ import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:islami_admin/features/azkar/azkar_injection.dart';
 import 'package:islami_admin/features/duas/duas_injection.dart';
 import 'package:islami_admin/features/feedback/feedback_injection.dart';
+import 'package:islami_admin/features/home/home_injection.dart';
 
 final sl = GetIt.instance;
 
 void init() {
+  // External
+  sl.registerLazySingleton(() => FirebaseFirestore.instance);
+  sl.registerLazySingleton(() => FirebaseAuth.instance);
+
   // Features
   initAuthFeature();
   initAzkarFeature();
   initDuasFeature();
   initFeedbackFeature();
+  initHomeFeature();
 }
 
 void initAuthFeature() {
@@ -45,7 +52,4 @@ void initAuthFeature() {
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(firebaseAuth: sl()),
   );
-
-  // External
-  sl.registerLazySingleton(() => FirebaseAuth.instance);
 }

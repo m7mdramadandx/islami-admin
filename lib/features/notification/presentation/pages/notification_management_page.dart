@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:islami_admin/core/utils/colors.dart';
 import 'package:islami_admin/features/notification/data/services/notification_service.dart';
 
@@ -20,6 +19,11 @@ class _NotificationManagementPageState
   );
   final _imageUrlController = TextEditingController();
   final _topicController = TextEditingController();
+  final _fcmTokenController = TextEditingController();
+  final _routeTypeController = TextEditingController();
+  final _routeIdController = TextEditingController();
+  final _extraRouteIdController = TextEditingController();
+  final _minVersionController = TextEditingController();
 
   final List<Map<String, String>> _templates = [
     {
@@ -49,12 +53,7 @@ class _NotificationManagementPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: AppBar(title: Text('Notifications'), centerTitle: true),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -78,11 +77,8 @@ class _NotificationManagementPageState
           // Right Side: Preview (Hidden on small screens)
           if (MediaQuery.of(context).size.width > 900)
             Expanded(
-              flex: 2,
-              child: Container(
-                color: Colors.grey.shade50,
-                child: Center(child: _buildNotificationPreview()),
-              ),
+              flex: 1,
+              child: Center(child: _buildNotificationPreview()),
             ),
         ],
       ),
@@ -95,7 +91,7 @@ class _NotificationManagementPageState
       children: [
         Text(
           'Push Notifications Center 🚀',
-          style: GoogleFonts.plusJakartaSans(
+          style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.bold,
             color: AppColors.colorPrimary,
@@ -104,9 +100,9 @@ class _NotificationManagementPageState
         const SizedBox(height: 12),
         Text(
           'Compose and send instant updates to all your users or specific groups.',
-          style: GoogleFonts.plusJakartaSans(
+          style: TextStyle(
             fontSize: 16,
-            color: Colors.grey.shade600,
+            color: AppColors.subText,
           ),
         ),
       ],
@@ -119,15 +115,15 @@ class _NotificationManagementPageState
       children: [
         Row(
           children: [
-            const Icon(
+            Icon(
               Icons.auto_awesome_outlined,
               color: AppColors.colorAccent,
-              size: 20,
+              size: 22,
             ),
             const SizedBox(width: 8),
             Text(
               'Quick Templates',
-              style: GoogleFonts.plusJakartaSans(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.colorPrimary,
@@ -143,7 +139,10 @@ class _NotificationManagementPageState
             itemCount: _templates.length,
             itemBuilder: (context, index) {
               final template = _templates[index];
-              return _buildTemplateCard(template);
+              return SizedBox(
+                width: 240,
+                child: _buildTemplateCard(template),
+              );
             },
           ),
         ),
@@ -152,9 +151,9 @@ class _NotificationManagementPageState
   }
 
   Widget _buildTemplateCard(Map<String, String> template) {
-    return Container(
-      width: 240,
-      margin: const EdgeInsets.only(right: 20),
+    return Card(
+      margin: const EdgeInsets.only(right: 16),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
           setState(() {
@@ -162,26 +161,13 @@ class _NotificationManagementPageState
             _bodyController.text = template['body']!;
           });
         },
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.grey.shade100),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade50,
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: AppColors.colorPrimary.withValues(alpha: 0.05),
                   shape: BoxShape.circle,
@@ -195,7 +181,7 @@ class _NotificationManagementPageState
               const Spacer(),
               Text(
                 template['title']!,
-                style: GoogleFonts.plusJakartaSans(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                   color: AppColors.colorPrimary,
@@ -206,9 +192,9 @@ class _NotificationManagementPageState
                 template['body']!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.plusJakartaSans(
+                style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey.shade500,
+                  color: AppColors.subText,
                   height: 1.4,
                 ),
               ),
@@ -235,13 +221,11 @@ class _NotificationManagementPageState
   }
 
   Widget _buildComposeForm() {
-    return Container(
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+      child: Padding(
       padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.grey.shade100),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -281,6 +265,82 @@ class _NotificationManagementPageState
               ),
             ],
           ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTextField(
+                  controller: _fcmTokenController,
+                  label: 'Direct FCM Token (Optional)',
+                  hint: 'fcm token...',
+                  icon: Icons.key_rounded,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Target priority: FCM Token > Topic broadcast.',
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.subText,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTextField(
+                  controller: _routeTypeController,
+                  label: 'Route Type (Optional)',
+                  hint: '1',
+                  icon: Icons.alt_route_rounded,
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              const SizedBox(width: 24),
+              Expanded(
+                child: _buildTextField(
+                  controller: _routeIdController,
+                  label: 'Route ID (Optional)',
+                  hint: '5',
+                  icon: Icons.numbers_rounded,
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTextField(
+                  controller: _extraRouteIdController,
+                  label: 'Extra Route ID (Optional)',
+                  hint: '0',
+                  icon: Icons.data_object_rounded,
+                  keyboardType: TextInputType.number,
+                ),
+              ),
+              const SizedBox(width: 24),
+              Expanded(
+                child: _buildTextField(
+                  controller: _minVersionController,
+                  label: 'Min Version (Optional)',
+                  hint: '1.0.0',
+                  icon: Icons.system_update_rounded,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'These values are sent in FCM data payload for deep-link/navigation handling.',
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.subText,
+            ),
+          ),
           const SizedBox(height: 40),
           SizedBox(
             width: double.infinity,
@@ -293,15 +353,22 @@ class _NotificationManagementPageState
                 ),
               ),
               child: _isSending
-                  ? const CircularProgressIndicator(color: Colors.white)
+                  ? SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.whiteSolid,
+                      ),
+                    )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.send_rounded, size: 20),
                         const SizedBox(width: 12),
                         Text(
-                          'Broadcast Notification',
-                          style: GoogleFonts.plusJakartaSans(
+                          _resolveSendButtonLabel(),
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -312,6 +379,7 @@ class _NotificationManagementPageState
           ),
         ],
       ),
+      ),
     );
   }
 
@@ -320,6 +388,7 @@ class _NotificationManagementPageState
     required String label,
     required String hint,
     required IconData icon,
+    TextInputType? keyboardType,
     int maxLines = 1,
   }) {
     return Column(
@@ -327,22 +396,22 @@ class _NotificationManagementPageState
       children: [
         Text(
           label,
-          style: GoogleFonts.plusJakartaSans(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color: Colors.grey.shade700,
+            color: AppColors.text,
           ),
         ),
         const SizedBox(height: 10),
         TextField(
           controller: controller,
+          keyboardType: keyboardType,
           maxLines: maxLines,
           onChanged: (_) => setState(() {}),
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: Icon(icon, size: 20),
             filled: true,
-            fillColor: Colors.grey.shade50,
           ),
         ),
       ],
@@ -355,101 +424,91 @@ class _NotificationManagementPageState
       children: [
         Text(
           'Live Preview',
-          style: GoogleFonts.plusJakartaSans(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Colors.grey.shade400,
+            color: AppColors.grey,
           ),
         ),
         const SizedBox(height: 24),
-        Container(
-          width: 320,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 30,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: AppColors.colorPrimary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.mosque,
+                        size: 14,
+                        color: AppColors.whiteSolid,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'ISLAMI APP',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.grey,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      'now',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  _titleController.text.isEmpty
+                      ? 'Notification Title'
+                      : _titleController.text,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: AppColors.text,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _bodyController.text.isEmpty
+                      ? 'Your message will appear here...'
+                      : _bodyController.text,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.subText,
+                    height: 1.4,
+                  ),
+                ),
+                if (_imageUrlController.text.isNotEmpty)
                   Container(
-                    width: 24,
-                    height: 24,
-                    decoration: const BoxDecoration(
-                      color: AppColors.colorPrimary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.mosque,
-                      color: Colors.white,
-                      size: 14,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'ISLAMI APP',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade400,
-                      letterSpacing: 1.2,
+                    margin: const EdgeInsets.only(top: 12),
+                    height: 150,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: DecorationImage(
+                        image: NetworkImage(_imageUrlController.text),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                  const Spacer(),
-                  Text(
-                    'now',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                _titleController.text.isEmpty
-                    ? 'Notification Title'
-                    : _titleController.text,
-                style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: AppColors.text,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _bodyController.text.isEmpty
-                    ? 'Your message will appear here...'
-                    : _bodyController.text,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                  height: 1.4,
-                ),
-              ),
-              if (_imageUrlController.text.isNotEmpty)
-                Container(
-                  margin: const EdgeInsets.only(top: 12),
-                  height: 150,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    image: DecorationImage(
-                      image: NetworkImage(_imageUrlController.text),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -460,6 +519,34 @@ class _NotificationManagementPageState
     if (_titleController.text.isEmpty || _bodyController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter both title and body')),
+      );
+      return;
+    }
+
+    final routeTypeText = _routeTypeController.text.trim();
+    final routeIdText = _routeIdController.text.trim();
+    final extraRouteIdText = _extraRouteIdController.text.trim();
+    final minVersionText = _minVersionController.text.trim();
+
+    final routeType = routeTypeText.isEmpty
+        ? null
+        : int.tryParse(routeTypeText);
+    final routeId = routeIdText.isEmpty ? null : int.tryParse(routeIdText);
+    final extraRouteId = extraRouteIdText.isEmpty
+        ? null
+        : int.tryParse(extraRouteIdText);
+
+    final hasInvalidNumber =
+        (routeTypeText.isNotEmpty && routeType == null) ||
+        (routeIdText.isNotEmpty && routeId == null) ||
+        (extraRouteIdText.isNotEmpty && extraRouteId == null);
+    if (hasInvalidNumber) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Route Type, Route ID, and Extra Route ID must be valid numbers.',
+          ),
+        ),
       );
       return;
     }
@@ -475,6 +562,13 @@ class _NotificationManagementPageState
         topic: _topicController.text.isEmpty
             ? 'all_users'
             : _topicController.text,
+        fcmToken: _fcmTokenController.text.trim().isEmpty
+            ? null
+            : _fcmTokenController.text.trim(),
+        routeType: routeType,
+        routeID: routeId,
+        extraRouteID: extraRouteId,
+        minVersion: minVersionText.isEmpty ? null : minVersionText,
       );
       if (mounted) {
         _showSuccessDialog();
@@ -482,8 +576,12 @@ class _NotificationManagementPageState
       }
     } catch (e) {
       if (mounted) {
+        debugPrintStack(stackTrace: StackTrace.current, label: e.toString());
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: AppColors.failureRed,
+          ),
         );
       }
     } finally {
@@ -499,21 +597,21 @@ class _NotificationManagementPageState
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.check_circle_rounded,
-              color: Colors.green,
+              color: AppColors.success,
               size: 64,
             ),
             const SizedBox(height: 24),
             Text(
               'Notification Sent!',
-              style: GoogleFonts.plusJakartaSans(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text('Your broadcast has been successfully sent to users.'),
+            Text(_resolveSuccessDialogMessage()),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
@@ -531,6 +629,25 @@ class _NotificationManagementPageState
         "🙏 أسْتَغْفِرُ اللهَ العَظِيمَ الَّذِي لاَ إلَهَ إلاَّ هُوَ، الحَيُّ القَيُّومُ، وَأتُوبُ إلَيهِ ";
     _imageUrlController.clear();
     _topicController.clear();
+    _fcmTokenController.clear();
+    _routeTypeController.clear();
+    _routeIdController.clear();
+    _extraRouteIdController.clear();
+    _minVersionController.clear();
     setState(() {});
+  }
+
+  String _resolveSendButtonLabel() {
+    if (_fcmTokenController.text.trim().isNotEmpty) {
+      return 'Send to Device Token';
+    }
+    return 'Broadcast Notification';
+  }
+
+  String _resolveSuccessDialogMessage() {
+    if (_fcmTokenController.text.trim().isNotEmpty) {
+      return 'Your notification was sent to the specified FCM token.';
+    }
+    return 'Your broadcast has been successfully sent to users.';
   }
 }

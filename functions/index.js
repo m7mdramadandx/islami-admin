@@ -11,7 +11,17 @@ const FCM_PERMISSION = "cloudmessaging.messages.create";
  */
 exports.sendFcmNotification = functions.https.onCall(async (data, context) => {
   // 1. Validate the request data
-  const {title, body, imageUrl, topic} = data;
+  const {
+    title,
+    body,
+    imageUrl,
+    topic,
+    fcmToken,
+    routeType,
+    routeID,
+    extraRouteID,
+    minVersion,
+  } = data;
   if (!title || !body) {
     throw new functions.https.HttpsError(
         "invalid-argument",
@@ -19,49 +29,88 @@ exports.sendFcmNotification = functions.https.onCall(async (data, context) => {
     );
   }
 
-  // 2. Define the notification target
-  const targetTopic = (topic && topic.trim().length > 0) ? topic : "all_users";
+  // 2. Resolve notification target
+  const directToken = typeof fcmToken === "string" ? fcmToken.trim() : "";
+  const targetTopic = typeof topic === "string" ? topic.trim() : "";
+
+  let targetTokens = [];
+  if (directToken.length > 0) {
+    targetTokens = [directToken];
+  }
+  if (targetTokens.length === 0 && targetTopic.length === 0) {
+    throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Provide either fcmToken or topic.",
+    );
+  }
 
   // 3. Construct the FCM message payload
-  const message = {
-    notification: {
-      title: title,
-      body: body,
-    },
-    android: {
-      notification: {
-        // Correct field name for Android is 'image'
-        ...(imageUrl && {image: imageUrl}),
-      },
-    },
-    apns: {
-      payload: {
-        aps: {
-          "mutable-content": 1,
-        },
-        fcm_options: {
-          image: imageUrl,
-        },
-      },
-    },
-    topic: targetTopic,
+  const dataPayload = {
+    payloadType: "data_only_v2",
+    title: String(title ?? ""),
+    body: String(body ?? ""),
+    imageUrl: String(imageUrl ?? ""),
+    routeType: routeType == null ? "" : String(routeType),
+    routeID: routeID == null ? "0" : String(routeID),
+    extraRouteID: extraRouteID == null ? "0" : String(extraRouteID),
+    minVersion: minVersion == null ? "" : String(minVersion),
   };
 
-  functions.logger.info("Attempting to send FCM message to topic:", targetTopic);
+  // FCM HTTP v1 often rejects messages with no `notification` (e.g. topic sends).
+  // Keep full `data` for your Android handler; `notification` satisfies the API + tray.
+  const notificationBlock = {
+    title: String(title ?? ""),
+    body: String(body ?? ""),
+  };
+
+  const message = {
+    data: dataPayload,
+    notification: notificationBlock,
+    android: {
+      priority: "high",
+      ...(imageUrl
+        ? {notification: {image: String(imageUrl)}}
+        : {}),
+    },
+    apns: {
+      headers: {
+        "apns-priority": "10",
+      },
+      payload: {
+        aps: {
+          "content-available": 1,
+        },
+      },
+      ...(imageUrl ? {fcmOptions: {imageUrl: String(imageUrl)}} : {}),
+    },
+    ...(targetTokens.length === 0 ? {topic: targetTopic} : {}),
+  };
+
+  functions.logger.info("Attempting to send FCM message", {
+    mode: targetTokens.length > 0 ? "direct" : "topic",
+    topic: targetTokens.length > 0 ? null : targetTopic,
+    tokenCount: targetTokens.length,
+    hasImage: Boolean(imageUrl),
+  });
 
   // 4. Send the message
   try {
+    if (targetTokens.length === 1) {
+      const response = await admin.messaging().send({
+        ...message,
+        token: targetTokens[0],
+      });
+      functions.logger.info("Successfully sent direct token message:", response);
+      return {success: true, mode: "token", messageId: response};
+    }
+
     const response = await admin.messaging().send(message);
-    functions.logger.info("Successfully sent message:", response);
-    return {success: true, messageId: response};
+    functions.logger.info("Successfully sent topic message:", response);
+    return {success: true, mode: "topic", messageId: response};
   } catch (error) {
     functions.logger.error("FCM Send Error:", error);
 
-    // Provide a more helpful error message to the client
-    let errorMessage = error.message || "Unknown FCM error";
-    if (error.code === "messaging/permission-denied") {
-      errorMessage = "Permission denied. Ensure the Firebase Cloud Messaging API is enabled and the service account has 'Firebase Cloud Messaging API Admin' role.";
-    }
+    const errorMessage = error.message || "Unknown FCM error";
 
     throw new functions.https.HttpsError(
         "internal",

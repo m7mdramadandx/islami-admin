@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:islami_admin/core/theme/theme_controller.dart';
 import 'package:islami_admin/core/utils/colors.dart';
 import 'package:islami_admin/features/auth/presentation/bloc/auth_bloc.dart';
 
@@ -13,7 +13,7 @@ class CustomDrawer extends StatelessWidget {
     final currentRoute = GoRouterState.of(context).uri.path;
 
     return Drawer(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).drawerTheme.backgroundColor,
       child: Column(
         children: [
           _buildHeader(context),
@@ -80,6 +80,38 @@ class CustomDrawer extends StatelessWidget {
                   route: '/feedback',
                   isSelected: currentRoute == '/feedback',
                 ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 2),
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    leading: Icon(
+                      ThemeController.isDark
+                          ? Icons.light_mode_rounded
+                          : Icons.dark_mode_rounded,
+                      color: AppColors.colorPrimary,
+                    ),
+                    title: Text(
+                      ThemeController.isDark
+                          ? 'Switch to Light'
+                          : 'Switch to Dark',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.text,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      // Defer theme rebuild: toggling during the same pointer/mouse
+                      // update phase triggers a known web assertion in MouseTracker.
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ThemeController.toggleTheme();
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -101,28 +133,28 @@ class CustomDrawer extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: AppColors.whiteSolid.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.mosque_rounded,
-              color: Colors.white,
+              color: AppColors.whiteSolid,
               size: 32,
             ),
           ),
           const SizedBox(height: 16),
           Text(
             'Islami Admin',
-            style: GoogleFonts.plusJakartaSans(
-              color: Colors.white,
+            style: TextStyle(
+              color: AppColors.whiteSolid,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
             'Control Panel',
-            style: GoogleFonts.plusJakartaSans(
-              color: Colors.white.withOpacity(0.6),
+            style: TextStyle(
+              color: AppColors.whiteSolid.withValues(alpha: 0.6),
               fontSize: 13,
             ),
           ),
@@ -136,10 +168,10 @@ class CustomDrawer extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
       child: Text(
         title,
-        style: GoogleFonts.plusJakartaSans(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.bold,
-          color: Colors.grey.shade400,
+          color: AppColors.grey,
           letterSpacing: 1.2,
         ),
       ),
@@ -159,18 +191,19 @@ class CustomDrawer extends StatelessWidget {
         onTap: () => context.go(route),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         selected: isSelected,
-        selectedTileColor: AppColors.colorPrimary.withOpacity(0.05),
+        selectedTileColor:
+            AppColors.colorPrimary.withValues(alpha: 0.05),
         leading: Icon(
           icon,
-          color: isSelected ? AppColors.colorPrimary : Colors.grey.shade600,
+          color: isSelected ? AppColors.colorPrimary : AppColors.subText,
           size: 22,
         ),
         title: Text(
           text,
-          style: GoogleFonts.plusJakartaSans(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? AppColors.colorPrimary : Colors.grey.shade700,
+            color: isSelected ? AppColors.colorPrimary : AppColors.text,
           ),
         ),
       ),
@@ -186,17 +219,17 @@ class CustomDrawer extends StatelessWidget {
           context.go('/');
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        leading: const Icon(
+        leading: Icon(
           Icons.logout_rounded,
-          color: Colors.redAccent,
+          color: AppColors.failureRed,
           size: 22,
         ),
         title: Text(
           'Logout',
-          style: GoogleFonts.plusJakartaSans(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Colors.redAccent,
+            color: AppColors.failureRed,
           ),
         ),
       ),

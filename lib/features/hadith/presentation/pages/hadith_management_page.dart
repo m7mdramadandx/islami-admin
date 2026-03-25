@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:islami_admin/core/utils/colors.dart';
 import 'package:islami_admin/features/hadith/data/repository/hadith_repository.dart';
 import 'package:islami_admin/features/hadith/domain/entities/hadith.dart';
 
@@ -15,42 +16,112 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Hadith Management')),
+      appBar: AppBar(
+        title: const Text('Hadith Management'),
+        centerTitle: true,
+      ),
       body: StreamBuilder<List<Hadith>>(
         stream: _hadithRepository.getHadiths(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Card(
+                margin: const EdgeInsets.all(24),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(color: AppColors.failureRed),
+                  ),
+                ),
+              ),
+            );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
           final hadiths = snapshot.data ?? [];
+          if (hadiths.isEmpty) {
+            return Center(
+              child: Card(
+                margin: const EdgeInsets.all(24),
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.format_quote_rounded,
+                          size: 48, color: AppColors.grey),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No hadith yet',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.colorPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Tap + to add your first hadith.',
+                        style: TextStyle(color: AppColors.subText),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
           return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
             itemCount: hadiths.length,
             itemBuilder: (context, index) {
               final hadith = hadiths[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ListTile(
-                  title: Text(hadith.text),
-                  subtitle: Text(hadith.narrator),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () =>
-                            _showAddEditHadithDialog(hadith: hadith),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16),
+                    title: Text(
+                      hadith.text,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.text,
+                        height: 1.4,
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Theme.of(context).colorScheme.error,
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        hadith.narrator,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.subText,
                         ),
-                        onPressed: () => _deleteHadith(hadith.id),
                       ),
-                    ],
+                    ),
+                    isThreeLine: true,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit_outlined,
+                              color: AppColors.colorPrimary),
+                          onPressed: () =>
+                              _showAddEditHadithDialog(hadith: hadith),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete_outline_rounded,
+                            color: AppColors.failureRed,
+                          ),
+                          onPressed: () => _deleteHadith(hadith.id),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -58,9 +129,15 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddEditHadithDialog(),
-        child: const Icon(Icons.add),
+        backgroundColor: AppColors.colorPrimary,
+        foregroundColor: AppColors.whiteSolid,
+        icon: const Icon(Icons.add_rounded),
+        label: Text(
+          'Add Hadith',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
@@ -75,21 +152,32 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(hadith == null ? 'Add Hadith' : 'Edit Hadith'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: textController,
-                decoration: const InputDecoration(labelText: 'Hadith Text'),
-                maxLines: 5,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: narratorController,
-                decoration: const InputDecoration(labelText: 'Narrator'),
-              ),
-            ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            hadith == null ? 'Add Hadith' : 'Edit Hadith',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.colorPrimary,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: textController,
+                  decoration: const InputDecoration(labelText: 'Hadith Text'),
+                  maxLines: 5,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: narratorController,
+                  decoration: const InputDecoration(labelText: 'Narrator'),
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -99,8 +187,7 @@ class _HadithManagementPageState extends State<HadithManagementPage> {
             ElevatedButton(
               onPressed: () {
                 final newHadith = Hadith(
-                  id:
-                      hadith?.id ??
+                  id: hadith?.id ??
                       DateTime.now().millisecondsSinceEpoch.toString(),
                   text: textController.text,
                   narrator: narratorController.text,

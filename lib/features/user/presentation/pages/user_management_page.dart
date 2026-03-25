@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:islami_admin/core/utils/colors.dart';
 import 'package:islami_admin/features/user/data/repository/user_repository.dart';
 import 'package:islami_admin/features/user/domain/entities/user.dart';
 
@@ -15,46 +16,116 @@ class _UserManagementPageState extends State<UserManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('User Management')),
+      appBar: AppBar(
+        title: const Text('User Management'),
+        centerTitle: true,
+      ),
       body: StreamBuilder<List<User>>(
         stream: _userRepository.getUsers(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Card(
+                margin: const EdgeInsets.all(24),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(color: AppColors.failureRed),
+                  ),
+                ),
+              ),
+            );
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
           final users = snapshot.data ?? [];
+          if (users.isEmpty) {
+            return Center(
+              child: Card(
+                margin: const EdgeInsets.all(24),
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.people_outline_rounded,
+                          size: 48, color: AppColors.grey),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No users yet',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.colorPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Registered users will appear here.',
+                        style: TextStyle(color: AppColors.subText),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
           return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             itemCount: users.length,
             itemBuilder: (context, index) {
               final user = users[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ListTile(
-                  title: Text(user.name),
-                  subtitle: Text(user.email),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (user.isAdmin)
-                        Icon(
-                          Icons.shield,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () => _showEditUserDialog(user),
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 8,
+                    ),
+                    title: Text(
+                      user.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.text,
                       ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                        onPressed: () => _deleteUser(user.id),
+                    ),
+                    subtitle: Text(
+                      user.email,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.subText,
                       ),
-                    ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (user.isAdmin)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: Icon(
+                              Icons.shield_rounded,
+                              color: AppColors.colorPrimary,
+                              size: 22,
+                            ),
+                          ),
+                        IconButton(
+                          icon: Icon(Icons.edit_outlined,
+                              color: AppColors.colorPrimary),
+                          onPressed: () => _showEditUserDialog(user),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete_outline_rounded,
+                            color: AppColors.failureRed,
+                          ),
+                          onPressed: () => _deleteUser(user.id),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -74,7 +145,16 @@ class _UserManagementPageState extends State<UserManagementPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit User'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Edit User',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.colorPrimary,
+            ),
+          ),
           content: StatefulBuilder(
             builder: (context, setState) {
               return Column(

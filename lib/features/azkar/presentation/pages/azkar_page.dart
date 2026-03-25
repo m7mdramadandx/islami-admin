@@ -59,23 +59,17 @@ class _AzkarPageState extends State<AzkarPage> {
             children: [
               _buildEditorHeader(state is AzkarLoading),
               Expanded(
-                child: Container(
-                  margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: Colors.grey.shade100),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade50,
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                  child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: state is AzkarLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _buildJsonEditor(),
                   ),
-                  child: state is AzkarLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : _buildJsonEditor(),
                 ),
               ),
             ],
@@ -87,11 +81,11 @@ class _AzkarPageState extends State<AzkarPage> {
           context.read<AzkarBloc>().add(SaveAzkarEvent(_controller.text));
         },
         backgroundColor: AppColors.colorPrimary,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.whiteSolid,
         icon: const Icon(Icons.save_rounded),
         label: Text(
           'Save Changes',
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -107,7 +101,7 @@ class _AzkarPageState extends State<AzkarPage> {
             children: [
               Text(
                 'Azkar JSON Editor',
-                style: GoogleFonts.plusJakartaSans(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: AppColors.colorPrimary,
@@ -116,9 +110,9 @@ class _AzkarPageState extends State<AzkarPage> {
               const SizedBox(height: 4),
               Text(
                 'Edit the raw JSON data for azkar.json file.',
-                style: GoogleFonts.plusJakartaSans(
+                style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade500,
+                  color: AppColors.subText,
                 ),
               ),
             ],
@@ -130,22 +124,22 @@ class _AzkarPageState extends State<AzkarPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.1),
+                color: AppColors.success.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.check_circle_rounded,
-                    color: Colors.green,
+                    color: AppColors.success,
                     size: 14,
                   ),
                   const SizedBox(width: 6),
                   Text(
                     'Live from Storage',
-                    style: GoogleFonts.plusJakartaSans(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Colors.green,
+                      color: AppColors.success,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -182,12 +176,15 @@ class _AzkarPageState extends State<AzkarPage> {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle_rounded, color: Colors.white),
+            Icon(Icons.check_circle_rounded, color: AppColors.whiteSolid),
             const SizedBox(width: 12),
-            const Text('Azkar saved and updated successfully!'),
+            Text(
+              'Azkar saved and updated successfully!',
+              style: TextStyle(color: AppColors.whiteSolid),
+            ),
           ],
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(24),

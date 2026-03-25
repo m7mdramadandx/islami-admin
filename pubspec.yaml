@@ -32,8 +32,19 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   build_runner: ^2.10.4
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/
+
+flutter_launcher_icons:
+  # Web-only: native android/ios folders are not in this repo.
+  android: false
+  ios: false
+  web:
+    generate: true
+    image_path: "assets/images/img_logo.png"
+    background_color: "#F7F4EF"
+    theme_color: "#4A6B52"

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:islami_admin/core/usecases/usecase.dart';
 import 'package:islami_admin/features/auth/domain/entities/user_entity.dart';

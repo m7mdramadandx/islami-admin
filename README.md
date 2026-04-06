@@ -42,15 +42,6 @@ the Cloud Functions runtime service account is missing FCM permissions.
 4. Ensure the `Firebase Cloud Messaging API` is enabled.
 5. Retry sending from the admin panel.
 
-## Dashboard analytics setup (GA4 + BigQuery)
+## Dashboard app version
 
-To populate dashboard event metrics (DAU/WAU/MAU and event counts), configure:
-
-1. Enable Firebase Analytics for your mobile app.
-2. Enable BigQuery export for Analytics in Firebase Console.
-3. Create Firestore document `config/analytics` with fields:
-   - `bigQueryDatasetId` (example: `analytics_173815807932`)
-   - `bigQueryLocation` (example: `US`)
-4. Create Firestore document `config/app` with:
-   - `version` (example: `1.2.3`)
-5. Deploy Cloud Functions so `getAnalyticsStats` is available.
+The home dashboard reads the displayed app version from Firestore document `config/app`, field `version` (for example `1.2.3`). If missing, it shows `unknown`.

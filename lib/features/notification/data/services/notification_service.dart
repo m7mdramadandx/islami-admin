@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:cloud_functions/cloud_functions.dart';
@@ -15,7 +14,6 @@ class NotificationService {
     String? imageUrl,
     String? topic,
     String? fcmToken,
-    int? routeType,
     int? routeID,
     int? extraRouteID,
     String? minVersion,
@@ -33,7 +31,6 @@ class NotificationService {
         if (imageUrl != null && imageUrl.isNotEmpty) 'imageUrl': imageUrl,
         if (topic != null && topic.isNotEmpty) 'topic': topic,
         if (fcmToken != null && fcmToken.isNotEmpty) 'fcmToken': fcmToken,
-        if (routeType != null) 'routeType': routeType,
         if (routeID != null) 'routeID': routeID,
         if (extraRouteID != null) 'extraRouteID': extraRouteID,
         if (minVersion != null && minVersion.isNotEmpty) 'minVersion': minVersion,

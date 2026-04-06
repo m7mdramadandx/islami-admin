@@ -1,0 +1,10 @@
+﻿# Dependencies (huge; not your source code)
+functions/node_modules/
+**/node_modules/
+
+# Flutter / Dart generated
+.dart_tool/
+build/
+
+# Firebase local cache
+.firebase/

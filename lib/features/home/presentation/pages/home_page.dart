@@ -110,9 +110,9 @@ class HomePage extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildKpiGrid(context, state.stats),
+              _buildKpiGrid(state.stats),
               const SizedBox(height: 20),
-              _buildInsightsPanel(context, state.stats),
+              _buildInsightsPanel(state.stats),
               const SizedBox(height: 28),
               _buildSectionTitle('Content Management'),
               const SizedBox(height: 14),
@@ -136,7 +136,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildKpiGrid(BuildContext context, HomeStats stats) {
+  Widget _buildKpiGrid(HomeStats stats) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return GridView.count(
@@ -155,28 +155,6 @@ class HomePage extends StatelessWidget {
               icon: Icons.people_alt_rounded,
               color: AppColors.info,
               trend: 'Registered accounts',
-            ),
-            _buildStatCard(
-              title: 'Active Today',
-              value: _formatNumber(stats.activeToday),
-              icon: Icons.bolt_rounded,
-              color: AppColors.colorAccent,
-              trend: 'GA4 DAU when available',
-            ),
-            _buildStatCard(
-              title: 'DAU / WAU / MAU',
-              value:
-                  '${_formatNumber(stats.analyticsDau)} / ${_formatNumber(stats.analyticsWau)} / ${_formatNumber(stats.analyticsMau)}',
-              icon: Icons.groups_rounded,
-              color: AppColors.titleColor,
-              trend: 'Analytics users',
-            ),
-            _buildStatCard(
-              title: 'Events (30d)',
-              value: _formatNumber(stats.analyticsTotalEvents30d),
-              icon: Icons.timeline_rounded,
-              color: AppColors.natural600,
-              trend: 'Total GA4 events',
             ),
             _buildStatCard(
               title: 'Feedback',
@@ -205,13 +183,6 @@ class HomePage extends StatelessWidget {
               icon: Icons.auto_stories_rounded,
               color: AppColors.blue,
               trend: 'Canonical total',
-            ),
-            _buildStatCard(
-              title: 'Active Rate',
-              value: '${stats.activeUsersPercentage.toStringAsFixed(1)}%',
-              icon: Icons.trending_up_rounded,
-              color: AppColors.colorPrimary,
-              trend: 'Today / total users',
             ),
             _buildStatCard(
               title: 'Feedback Density',
@@ -289,10 +260,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInsightsPanel(BuildContext context, HomeStats stats) {
-    final engagementStatus = stats.activeUsersPercentage >= 10
-        ? 'Healthy engagement'
-        : 'Engagement needs attention';
+  Widget _buildInsightsPanel(HomeStats stats) {
     final feedbackStatus = stats.feedbackRatePerThousandUsers >= 15
         ? 'High user feedback volume'
         : 'Low feedback volume';
@@ -308,35 +276,11 @@ class HomePage extends StatelessWidget {
             _buildSectionTitle('Insights & Health'),
             const SizedBox(height: 12),
             _buildInsightRow(
-              icon: Icons.health_and_safety_rounded,
-              color: AppColors.success,
-              title: engagementStatus,
-              subtitle:
-                  'Current active rate is ${stats.activeUsersPercentage.toStringAsFixed(1)}%.',
-            ),
-            const SizedBox(height: 16),
-            _buildInsightRow(
               icon: Icons.mark_chat_read_rounded,
               color: AppColors.info,
               title: feedbackStatus,
               subtitle:
                   '${stats.feedbackRatePerThousandUsers.toStringAsFixed(1)} feedback messages per 1000 users.',
-            ),
-            const SizedBox(height: 16),
-            _buildInsightRow(
-              icon: Icons.notifications_active_rounded,
-              color: AppColors.colorAccent,
-              title: 'Notification funnel (30d)',
-              subtitle:
-                  'Sent: ${_formatNumber(stats.analyticsNotificationSent30d)}, opened: ${_formatNumber(stats.analyticsNotificationOpened30d)}.',
-            ),
-            const SizedBox(height: 16),
-            _buildInsightRow(
-              icon: Icons.touch_app_rounded,
-              color: AppColors.blue,
-              title: 'Content and feedback events (30d)',
-              subtitle:
-                  'Content views: ${_formatNumber(stats.analyticsContentViewed30d)}, feedback submits: ${_formatNumber(stats.analyticsFeedbackSubmitted30d)}.',
             ),
             const SizedBox(height: 16),
             _buildInsightRow(

@@ -22,15 +22,4 @@ class FeedbackModel extends FeedbackMessage {
       msg: json['msg'] ?? '',
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'app_version': appVersion,
-      'deviceName': deviceName,
-      'email': email,
-      'phone': phone,
-      'date': date,
-      'msg': msg,
-    };
-  }
 }

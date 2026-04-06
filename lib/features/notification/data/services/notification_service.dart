@@ -5,9 +5,10 @@ import 'package:cloud_functions/cloud_functions.dart';
 class NotificationService {
   /// Sends a notification by invoking a secure Cloud Function.
   ///
-  /// This is the recommended approach for sending FCM notifications.
-  /// The app calls a backend function, which then securely sends the notification.
-  /// This avoids exposing the FCM server key on the client.
+  /// Uses top-level key [payload] (not `body`) so the HTTPS callable transport
+  /// does not confuse it with HTTP body handling. [payload] includes both
+  /// `title` and `body` (message text). FCM [data] still exposes a JSON string
+  /// under key `body` for background parsing.
   static Future<void> sendNotification({
     required String title,
     required String body,
@@ -19,13 +20,11 @@ class NotificationService {
     String? minVersion,
   }) async {
     try {
-      // Get a reference to the callable Cloud Function.
       final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
         'sendFcmNotification',
       );
 
-      // Prepare the data to be sent to the function.
-      final Map<String, dynamic> data = {
+      final Map<String, dynamic> payload = {
         'title': title,
         'body': body,
         if (imageUrl != null && imageUrl.isNotEmpty) 'imageUrl': imageUrl,
@@ -36,10 +35,11 @@ class NotificationService {
         if (minVersion != null && minVersion.isNotEmpty) 'minVersion': minVersion,
       };
 
-      developer.log('Calling Cloud Function with data: $data');
+      developer.log('Calling Cloud Function with payload: $payload');
 
-      // Invoke the function and wait for the result.
-      final result = await callable.call(data);
+      final result = await callable.call(<String, dynamic>{
+        'payload': payload,
+      });
 
       developer.log('Cloud Function result: ${result.data}');
 

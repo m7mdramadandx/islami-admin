@@ -147,11 +147,55 @@ class _NotificationManagementPageState
       'icon': 'nights_stay',
       'routeId': '0',
     },
+    // يوم الجمعة — Jumu'ah defaults
+    {
+      'title': 'جمعة مباركة',
+      'body':
+          'تقبّل الله منا ومنكم صالح الأعمال، وجمعة مباركة ملؤها السكينة والبركة.',
+      'icon': 'mosque',
+      'routeId': '1',
+    },
+    {
+      'title': 'تذكير: صلاة الجمعة',
+      'body':
+          'اقترب موعد الجمعة — تيَمَّم بالوضوء المبكر والذهاب إلى المسجد قبل الخطبة.',
+      'icon': 'today',
+      'routeId': '15',
+    },
+    {
+      'title': 'سورة الكهف',
+      'body':
+          'لا تنسَ قراءة سورة الكهف اليوم؛ نورٌ بين الجمعتين بإذن الله تعالى.',
+      'icon': 'menu_book',
+      'routeId': '2',
+    },
+    {
+      'title': 'ساعة استجابة يوم الجمعة',
+      'body':
+          'من فضل يوم الجمعة ساعة لا يوافقها عبد مسلم فيسأل الله خيراً إلا أعطاه — اغتنم الدعاء.',
+      'icon': 'volunteer_activism',
+      'routeId': '18',
+    },
+    {
+      'title': 'الصلاة على النبي ﷺ',
+      'body':
+          'أكثروا من الصلاة عليه يوم الجمعة؛ فإن صلاتكم معروضة عليه.',
+      'icon': 'spa',
+      'routeId': '4',
+    },
+    {
+      'title': 'خير يوم الجمعة',
+      'body':
+          'خير يوم طلعت فيه الشمس يوم الجمعة — فيه ساعة لا يوافقها عبد مؤمن يدعو الله إلا استجاب له.',
+      'icon': 'format_quote',
+      'routeId': '1',
+    },
   ];
 
   final Random _random = Random();
 
   bool _isSending = false;
+
   /// Preset for FCM `routeID` (labels match app sections; value = id).
   NotificationRouteType? _selectedRouteIdPreset;
 
@@ -238,7 +282,10 @@ class _NotificationManagementPageState
               icon: const Icon(Icons.shuffle_rounded, size: 20),
               label: const Text('Random'),
               style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
               ),
             ),
           ],
@@ -369,6 +416,8 @@ class _NotificationManagementPageState
         return Icons.spa_rounded;
       case 'nights_stay':
         return Icons.nights_stay_rounded;
+      case 'today':
+        return Icons.today_rounded;
       default:
         return Icons.notifications_rounded;
     }
@@ -533,10 +582,7 @@ class _NotificationManagementPageState
             child: DropdownButton<NotificationRouteType?>(
               value: _selectedRouteIdPreset,
               isExpanded: true,
-              hint: Text(
-                'Not set',
-                style: TextStyle(color: AppColors.subText),
-              ),
+              hint: Text('Not set', style: TextStyle(color: AppColors.subText)),
               items: [
                 const DropdownMenuItem<NotificationRouteType?>(
                   value: null,
@@ -720,9 +766,7 @@ class _NotificationManagementPageState
 
     if (extraRouteIdText.isNotEmpty && extraRouteId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Extra Route ID must be a valid number.'),
-        ),
+        const SnackBar(content: Text('Extra Route ID must be a valid number.')),
       );
       return;
     }
@@ -735,9 +779,7 @@ class _NotificationManagementPageState
         imageUrl: _imageUrlController.text.isEmpty
             ? null
             : _imageUrlController.text,
-        topic: _topicController.text.isEmpty
-            ? 'all_users'
-            : _topicController.text,
+        topic: _topicController.text.isEmpty ? null : _topicController.text,
         fcmToken: _fcmTokenController.text.trim().isEmpty
             ? null
             : _fcmTokenController.text.trim(),

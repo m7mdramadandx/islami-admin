@@ -17,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
     text: kDebugMode ? "mhmdrmdandx@gmail.com" : "",
   );
   final _passwordController = TextEditingController(
-    text: kDebugMode ? "123456**" : "",
+    text: kDebugMode ? "Muha123#" : "",
   );
 
   @override
@@ -109,11 +109,11 @@ class _LoginPageState extends State<LoginPage> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   context.read<AuthBloc>().add(
-                                        LoginEvent(
-                                          email: _emailController.text,
-                                          password: _passwordController.text,
-                                        ),
-                                      );
+                                    LoginEvent(
+                                      email: _emailController.text,
+                                      password: _passwordController.text,
+                                    ),
+                                  );
                                 },
                                 child: Text(
                                   'Login',

@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeaderSection(context),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             _buildStatsSection(context),
           ],
         ),
@@ -47,39 +47,72 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildHeaderSection(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      margin: EdgeInsets.zero,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.colorPrimary, AppColors.colorSecondary],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.colorPrimary, AppColors.colorSecondary],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.colorPrimary.withValues(alpha: 0.2),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(28),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Welcome back, Admin',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: AppColors.whiteSolid,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Welcome back, Admin',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.whiteSolid,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Your unified control center for managing content, users, and engagement.',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: AppColors.whiteSolid.withValues(alpha: 0.85),
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.whiteSolid.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(
+                    Icons.dashboard_rounded,
+                    color: AppColors.whiteSolid,
+                    size: 28,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 6),
-            Text(
-              'A unified control center for users, content quality, and delivery.',
-              style: TextStyle(
-                fontSize: 15,
-                color: AppColors.whiteSolid.withValues(alpha: 0.88),
-              ),
-            ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 24),
             FilledButton.icon(
               onPressed: () => context.read<HomeBloc>().add(GetHomeStatsEvent()),
               icon: const Icon(Icons.refresh_rounded),
@@ -87,7 +120,10 @@ class HomePage extends StatelessWidget {
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.whiteSolid,
                 foregroundColor: AppColors.colorPrimary,
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ],
@@ -102,7 +138,7 @@ class HomePage extends StatelessWidget {
         if (state is HomeLoading) {
           return const Center(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 40),
+              padding: EdgeInsets.symmetric(vertical: 60),
               child: CircularProgressIndicator(),
             ),
           );
@@ -111,23 +147,44 @@ class HomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildKpiGrid(state.stats),
-              const SizedBox(height: 20),
+              const SizedBox(height: 32),
               _buildInsightsPanel(state.stats),
-              const SizedBox(height: 28),
+              const SizedBox(height: 32),
               _buildSectionTitle('Content Management'),
-              const SizedBox(height: 14),
+              const SizedBox(height: 16),
               _buildQuickActionsGrid(context),
-              const SizedBox(height: 28),
+              const SizedBox(height: 32),
               _buildSectionTitle('Recent Activity'),
-              const SizedBox(height: 14),
+              const SizedBox(height: 16),
               _buildRecentActivitySection(context),
+              const SizedBox(height: 20),
             ],
           );
         } else if (state is HomeError) {
           return Center(
-            child: Text(
-              'Error loading statistics: ${state.message}',
-              style: TextStyle(color: AppColors.failureRed),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.failureRed.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.failureRed.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.error_outline, color: AppColors.failureRed, size: 28),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      'Error loading statistics: ${state.message}',
+                      style: TextStyle(
+                        color: AppColors.failureRed,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }
@@ -145,9 +202,9 @@ class HomePage extends StatelessWidget {
           crossAxisCount: constraints.maxWidth > 900
               ? 4
               : (constraints.maxWidth > 600 ? 2 : 1),
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-          childAspectRatio: constraints.maxWidth > 900 ? 2.1 : 1.9,
+          crossAxisSpacing: 24,
+          mainAxisSpacing: 24,
+          childAspectRatio: constraints.maxWidth > 900 ? 2.2 : 1.95,
           children: [
             _buildStatCard(
               title: 'Total Users',
@@ -205,56 +262,72 @@ class HomePage extends StatelessWidget {
     required Color color,
     required String trend,
   }) {
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(10),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: color, size: 26),
                   ),
-                  child: Icon(icon, color: color, size: 24),
-                ),
-                Text(
-                  trend,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: color,
-                    fontWeight: FontWeight.w500,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      trend,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: color,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.colorPrimary,
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.colorPrimary,
+                      letterSpacing: -0.5,
+                    ),
                   ),
-                ),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.subText,
+                  const SizedBox(height: 4),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.subText,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -266,15 +339,35 @@ class HomePage extends StatelessWidget {
         : 'Low feedback volume';
     final contentCoverage = stats.totalHadith + stats.quranSurahs;
 
-    return Card(
-      margin: EdgeInsets.zero,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle('Insights & Health'),
-            const SizedBox(height: 12),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.info.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.show_chart_rounded,
+                    color: AppColors.info,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                _buildSectionTitle('Insights & Health'),
+              ],
+            ),
+            const SizedBox(height: 20),
             _buildInsightRow(
               icon: Icons.mark_chat_read_rounded,
               color: AppColors.info,
@@ -282,15 +375,19 @@ class HomePage extends StatelessWidget {
               subtitle:
                   '${stats.feedbackRatePerThousandUsers.toStringAsFixed(1)} feedback messages per 1000 users.',
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
+            Divider(color: AppColors.border.withValues(alpha: 0.5), height: 1),
+            const SizedBox(height: 18),
             _buildInsightRow(
               icon: Icons.inventory_2_rounded,
-              color: AppColors.titleColor,
+              color: AppColors.success,
               title: 'Content inventory snapshot',
               subtitle:
                   '$contentCoverage managed records across Quran + Hadith modules.',
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
+            Divider(color: AppColors.border.withValues(alpha: 0.5), height: 1),
+            const SizedBox(height: 18),
             _buildInsightRow(
               icon: Icons.system_update_rounded,
               color: AppColors.gold,
@@ -315,12 +412,12 @@ class HomePage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 20),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 14),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,17 +425,18 @@ class HomePage extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: AppColors.colorPrimary,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 4),
               Text(
                 subtitle,
                 style: TextStyle(
                   fontSize: 13,
                   color: AppColors.subText,
+                  height: 1.4,
                 ),
               ),
             ],
@@ -352,9 +450,10 @@ class HomePage extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
         color: AppColors.colorPrimary,
+        letterSpacing: -0.3,
       ),
     );
   }
@@ -421,43 +520,51 @@ class HomePage extends StatelessWidget {
                 : (constraints.maxWidth > 800 ? 3 : 2),
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
-            childAspectRatio: 3.4,
+            childAspectRatio: 3.2,
           ),
           itemCount: actions.length,
           itemBuilder: (context, index) {
             final action = actions[index];
-            return InkWell(
-              onTap: () => context.go(action.route),
-              borderRadius: BorderRadius.circular(16),
-              child: Card(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: action.color.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => context.go(action.route),
+                borderRadius: BorderRadius.circular(14),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.border, width: 1),
+                    color: action.color.withValues(alpha: 0.02),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: action.color.withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(action.icon, color: action.color, size: 24),
                         ),
-                        child: Icon(action.icon, color: action.color, size: 24),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        action.title,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.colorPrimary,
+                        const SizedBox(width: 14),
+                        Text(
+                          action.title,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.colorPrimary,
+                          ),
                         ),
-                      ),
-                      const Spacer(),
-                      Icon(
-                        Icons.chevron_right_rounded,
-                        color: AppColors.grey,
-                      ),
-                    ],
+                        const Spacer(),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          color: action.color,
+                          size: 18,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -469,31 +576,48 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildRecentActivitySection(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Recent Activity',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.colorPrimary,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.blue.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.history_rounded,
+                        color: AppColors.blue,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    _buildSectionTitle('Recent Activity'),
+                  ],
                 ),
-                TextButton(
+                TextButton.icon(
                   onPressed: () => context.go('/notification-management'),
-                  child: const Text('Open Notifications'),
+                  icon: const Icon(Icons.arrow_forward_rounded, size: 18),
+                  label: const Text('View All'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.colorPrimary,
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             _buildActivityItem(
               'New Hadith Added',
               'Admin added a new hadith to the collection',
@@ -501,7 +625,7 @@ class HomePage extends StatelessWidget {
               Icons.add_circle_outline_rounded,
               AppColors.success,
             ),
-            Divider(height: 32, color: AppColors.border),
+            Divider(height: 28, color: AppColors.border.withValues(alpha: 0.5)),
             _buildActivityItem(
               'User Feedback',
               'New feedback received from user "Ahmed"',
@@ -509,7 +633,7 @@ class HomePage extends StatelessWidget {
               Icons.message_outlined,
               AppColors.info,
             ),
-            Divider(height: 32, color: AppColors.border),
+            Divider(height: 28, color: AppColors.border.withValues(alpha: 0.5)),
             _buildActivityItem(
               'Notification Sent',
               'Ramadan reminder sent to all users',
@@ -535,12 +659,12 @@ class HomePage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 20),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: 14),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -549,10 +673,11 @@ class HomePage extends StatelessWidget {
                 title,
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.colorPrimary,
                 ),
               ),
+              const SizedBox(height: 2),
               Text(
                 subtitle,
                 style: TextStyle(
@@ -568,6 +693,7 @@ class HomePage extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             color: AppColors.grey,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],

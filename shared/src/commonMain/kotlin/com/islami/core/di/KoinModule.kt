@@ -1,13 +1,24 @@
 package com.islami.core.di
 
+import com.islami.data.repository.AuthRepositoryImpl
+import com.islami.domain.repositories.AuthRepository
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 fun commonModule(): Module = module {
-    // Repositories will be added in Phase 2
-    // DataSources will be added in Phase 2
-    // UseCases will be added in Phase 3
+    // Repositories
+    single<AuthRepository> {
+        AuthRepositoryImpl(
+            firebaseAuthClient = get(),
+            localDataSource = get()
+        )
+    }
 }
+
+/**
+ * Platform-specific module that must be defined in each platform
+ */
+expect fun platformModule(): Module
 
 /**
  * Initialize all KMP modules
@@ -15,5 +26,5 @@ fun commonModule(): Module = module {
  */
 fun initializeKoinModules(): List<Module> = listOf(
     commonModule(),
-    // Additional modules will be added in later phases
+    platformModule()
 )

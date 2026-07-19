@@ -2,6 +2,7 @@ package com.islami.data.remote.http
 
 import com.islami.core.error.Result
 import io.ktor.client.statement.HttpResponse
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,34 +14,38 @@ interface HttpClient {
     /**
      * Make GET request and deserialize to type T
      */
-    suspend inline fun <reified T> get(
+    suspend fun <T> get(
         url: String,
+        serializer: KSerializer<T>,
         headers: Map<String, String> = emptyMap()
     ): Result<T>
 
     /**
      * Make POST request with JSON body and deserialize response
      */
-    suspend inline fun <reified T> post(
+    suspend fun <T> post(
         url: String,
         body: Any,
+        serializer: KSerializer<T>,
         headers: Map<String, String> = emptyMap()
     ): Result<T>
 
     /**
      * Make PUT request with JSON body and deserialize response
      */
-    suspend inline fun <reified T> put(
+    suspend fun <T> put(
         url: String,
         body: Any,
+        serializer: KSerializer<T>,
         headers: Map<String, String> = emptyMap()
     ): Result<T>
 
     /**
      * Make DELETE request
      */
-    suspend inline fun <reified T> delete(
+    suspend fun <T> delete(
         url: String,
+        serializer: KSerializer<T>,
         headers: Map<String, String> = emptyMap()
     ): Result<T>
 

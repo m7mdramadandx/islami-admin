@@ -3,6 +3,12 @@ package com.islami.data.remote.firebase
 import com.islami.core.error.Result
 import com.islami.domain.entities.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.KSerializer
+
+/**
+ * Platform-specific Firebase initialization
+ */
+expect fun initializeFirebase()
 
 /**
  * Firebase Auth wrapper interface - platform-independent
@@ -61,7 +67,7 @@ interface FirebaseFirestoreClient {
     suspend fun <T> getDocument(
         collection: String,
         documentId: String,
-        clazz: Class<T>
+        serializer: KSerializer<T>
     ): Result<T>
 
     /**
@@ -69,7 +75,7 @@ interface FirebaseFirestoreClient {
      */
     suspend fun <T> getCollection(
         collection: String,
-        clazz: Class<T>
+        serializer: KSerializer<T>
     ): Result<List<T>>
 
     /**
@@ -79,7 +85,7 @@ interface FirebaseFirestoreClient {
         collection: String,
         field: String,
         value: Any,
-        clazz: Class<T>
+        serializer: KSerializer<T>
     ): Result<List<T>>
 
     /**
@@ -88,7 +94,7 @@ interface FirebaseFirestoreClient {
     fun <T> observeDocument(
         collection: String,
         documentId: String,
-        clazz: Class<T>
+        serializer: KSerializer<T>
     ): Flow<Result<T>>
 
     /**
@@ -96,7 +102,7 @@ interface FirebaseFirestoreClient {
      */
     fun <T> observeCollection(
         collection: String,
-        clazz: Class<T>
+        serializer: KSerializer<T>
     ): Flow<Result<List<T>>>
 
     /**

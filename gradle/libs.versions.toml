@@ -88,6 +88,7 @@ truth = { module = "com.google.truth:truth", version.ref = "truth" }
 
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+jetbrains-compose-gradle-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version = "8.2.0" }
 google-services-gradle-plugin = { module = "com.google.gms:google-services", version = "4.4.0" }
 crashlytics-gradle-plugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version = "2.9.9" }
@@ -100,6 +101,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version = "8.2.0" }
 android-library = { id = "com.android.library", version = "8.2.0" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version = "4.4.0" }
 crashlytics = { id = "com.google.firebase.crashlytics", version = "2.9.9" }

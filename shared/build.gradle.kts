@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
@@ -35,10 +36,11 @@ kotlin {
 
             // DI - Koin
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
 
             // HTTP - Ktor
             implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.content_negotiation)
             implementation(libs.ktor.serialization.json)
             implementation(libs.ktor.client.logging)
 
@@ -47,6 +49,13 @@ kotlin {
             implementation(libs.gitlive.firebase.firestore)
             implementation(libs.gitlive.firebase.storage)
             implementation(libs.gitlive.firebase.crashlytics)
+
+            // Compose Multiplatform
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
         }
 
         commonTest.dependencies {

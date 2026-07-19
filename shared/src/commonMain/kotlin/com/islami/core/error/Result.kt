@@ -1,5 +1,46 @@
 package com.islami.core.error
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+/**
+ * Sealed class for API responses - mirrors Islami app's DataState pattern
+ * Provides a single source of truth for async data states
+ */
+sealed class DataState<out T>(
+    val isLoading: Boolean = false,
+    val data: T? = null,
+    val errorResponse: ErrorResponse? = null
+) {
+    data object Idle : DataState<Nothing>(false)
+    
+    class Loading<T>(val cachedData: T? = null) : DataState<T>(true, cachedData)
+    
+    data class Error<T>(val e: ErrorResponse) : DataState<T>(false, errorResponse = e)
+    
+    data class Success<T>(val responseData: T) : DataState<T>(false, data = responseData)
+
+    fun getOrNull(): T? = data
+
+    fun exceptionOrNull(): ErrorResponse? = errorResponse
+
+    fun fold(
+        onSuccess: (T) -> Unit,
+        onError: (ErrorResponse) -> Unit = {},
+        onLoading: () -> Unit = {}
+    ) {
+        when (this) {
+            is Success -> onSuccess(responseData)
+            is Error -> onError(e)
+            is Loading -> onLoading()
+            is Idle -> onLoading()
+        }
+    }
+}
+
+/**
+ * Kotlin Multiplatform Result type - simpler than DataState, for direct operations
+ */
 sealed class Result<out T> {
     data class Success<T>(val data: T) : Result<T>()
     data class Error(val exception: Exception) : Result<Nothing>()
@@ -29,6 +70,23 @@ sealed class Result<out T> {
     }
 }
 
+/**
+ * API Error Response - mirrors Islami app's ErrorResponse
+ * Represents standardized API error responses
+ */
+@Serializable
+data class ErrorResponse(
+    @SerialName("code")
+    val code: Int? = null,
+    @SerialName("message")
+    val message: String? = null,
+    @SerialName("error")
+    val error: String? = null
+) : Exception(message ?: error ?: "Unknown error")
+
+/**
+ * Sealed class for different error types
+ */
 sealed class Failure {
     data object Unknown : Failure()
     data object NetworkError : Failure()

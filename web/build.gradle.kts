@@ -5,6 +5,7 @@ plugins {
 
 kotlin {
     js(IR) {
+        moduleName = "islami-admin"
         browser()
         binaries.executable()
     }

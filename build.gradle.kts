@@ -10,8 +10,5 @@ plugins {
     alias(libs.plugins.kotlin.serialization).apply(false)
 }
 
-/*
-tasks.register<Delete>("clean") {
-    delete(rootProject.layout.buildDirectory)
-}
-*/
+
+/* Root clean task is provided by Kotlin/JS plugin or can be added manually if needed */

@@ -1,10 +1,16 @@
 package com.islami.core.di
 
+import com.islami.data.remote.firebase.FirebaseCrashlyticsClient
+import com.islami.data.remote.firebase.FirebaseCrashlyticsClientImpl
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.crashlytics.crashlytics
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun platformModule(): Module = module {
-    // iOS Firebase Clients - TODO: Implement GitLive Firebase SDK for iOS
-    // iOS HTTP Client - TODO: Implement Ktor HTTP client for iOS
-    // iOS Local Data Sources - TODO: Implement UserDefaults or Realm-based storage
+    // Firebase Crashlytics
+    single { Firebase.crashlytics }
+    single<FirebaseCrashlyticsClient> { FirebaseCrashlyticsClientImpl(get()) }
+    
+    // TODO: Implement iOS Local Data Source
 }

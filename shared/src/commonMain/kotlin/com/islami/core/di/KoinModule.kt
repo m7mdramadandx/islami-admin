@@ -21,24 +21,21 @@ import com.islami.presentation.notifications.*
 import com.islami.presentation.azkar.*
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
-import dev.gitlive.firebase.crashlytics.crashlytics
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.storage.storage
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 fun commonModule(): Module = module {
-    // Firebase SDK
+    // Firebase SDK (Common)
     single { Firebase.auth }
     single { Firebase.firestore }
     single { Firebase.storage }
-    single { Firebase.crashlytics }
 
     // Firebase Clients (Wrappers)
     single<FirebaseAuthClient> { FirebaseAuthClientImpl(get()) }
     single<FirebaseFirestoreClient> { FirebaseFirestoreClientImpl(get()) }
     single<FirebaseStorageClient> { FirebaseStorageClientImpl(get()) }
-    single<FirebaseCrashlyticsClient> { FirebaseCrashlyticsClientImpl(get()) }
 
     // HTTP Client
     single<HttpClient> { HttpClientImpl() }

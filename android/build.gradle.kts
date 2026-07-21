@@ -1,10 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
-    alias(libs.plugins.hilt.android)
 }
 
 android {

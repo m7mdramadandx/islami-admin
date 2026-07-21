@@ -1,16 +1,9 @@
-# Miscellaneous
-*.class
+# Kotlin Multiplatform
+.gradle/
+build/
+**/build/
+.kotlin/
 *.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -18,35 +11,33 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# Android
+.navigation/
+captures/
+output.json
+*.jks
+*.keystore
+*.pk8
+*.pem
+gradle-wrapper.jar
+.cxx/
+local.properties
 
-# Node / Firebase Cloud Functions (thousands of deps — never commit)
-functions/node_modules/
-**/node_modules/
-
-# Firebase CLI local cache (hosting previews, deploy metadata)
+# Firebase
 .firebase/
+functions/node_modules/
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
-/coverage/
+# Node
+node_modules/
+package-lock.json
 
-# Symbolication related
-app.*.symbols
+# Web (Kotlin/Wasm)
+.js/
+.wasm/
 
-# Obfuscation related
-app.*.map.json
+# OS specific
+.DS_Store
+Thumbs.db
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# VS Code
+.vscode/

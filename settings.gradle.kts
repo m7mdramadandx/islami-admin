@@ -8,14 +8,11 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
     repositories {
         google()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
-        flatDir {
-            dirs("app/libs")
-        }
     }
 }
 
@@ -30,8 +27,4 @@ include(":shared")
 
 // Platform-specific modules
 include(":android")
-include(":ios")
 include(":web")
-
-// Build utilities
-include(":buildSrc")

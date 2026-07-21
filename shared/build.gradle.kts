@@ -21,9 +21,10 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    // Web target (JS/WASM)
-    wasmJs {
+    // Web target (Standard JS)
+    js(IR) {
         browser()
+        binaries.executable()
     }
 
     sourceSets {
@@ -40,7 +41,7 @@ kotlin {
 
             // HTTP - Ktor
             implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content_negotiation)
+            implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.json)
             implementation(libs.ktor.client.logging)
 
@@ -48,7 +49,7 @@ kotlin {
             implementation(libs.gitlive.firebase.auth)
             implementation(libs.gitlive.firebase.firestore)
             implementation(libs.gitlive.firebase.storage)
-            implementation(libs.gitlive.firebase.crashlytics)
+            // Crashlytics moved to platform specific as it doesn't support JS
 
             // Compose Multiplatform
             implementation(compose.runtime)
@@ -70,6 +71,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.android)
             implementation(libs.koin.android)
+            implementation(libs.gitlive.firebase.crashlytics)
 
             // AndroidX
             implementation(libs.androidx.core)
@@ -84,11 +86,14 @@ kotlin {
         // iOS-specific dependencies
         iosMain.dependencies {
             implementation(libs.ktor.client.ios)
+            implementation(libs.gitlive.firebase.crashlytics)
         }
 
-        // Web-specific dependencies
-        wasmJsMain.dependencies {
-            implementation(libs.ktor.client.js)
+        // Web-specific dependencies (JS)
+        val jsMain by getting {
+            dependencies {
+                implementation(libs.ktor.client.js)
+            }
         }
     }
 }

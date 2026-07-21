@@ -16,6 +16,9 @@ import com.islami.presentation.auth.*
 import com.islami.presentation.home.*
 import com.islami.presentation.feedback.*
 import com.islami.presentation.quran.*
+import com.islami.presentation.hadith.*
+import com.islami.presentation.notifications.*
+import com.islami.presentation.azkar.*
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.crashlytics.crashlytics
@@ -84,6 +87,9 @@ fun commonModule(): Module = module {
     factory { HomeStateHolder(get()) }
     factory { FeedbackStateHolder(get(), get()) }
     factory { QuranStateHolder(get()) }
+    factory { HadithStateHolder(get()) }
+    factory { NotificationStateHolder(get()) }
+    factory { AzkarStateHolder(get()) }
 }
 
 /**

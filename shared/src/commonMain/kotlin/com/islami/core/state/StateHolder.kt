@@ -92,9 +92,11 @@ sealed class UiState<out T> {
 
     fun isLoading(): Boolean = this is Loading
 
-    fun mapSuccess(transform: (T) -> UiState<T>): UiState<T> = when (this) {
+    fun <R> mapSuccess(transform: (T) -> UiState<R>): UiState<R> = when (this) {
         is Success -> transform(data)
-        else -> this
+        is Loading -> Loading
+        is Error -> Error(message, exception)
+        is Empty -> Empty
     }
 }
 

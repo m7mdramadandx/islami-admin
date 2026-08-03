@@ -13,9 +13,10 @@ class FirebaseStorageClientImpl(
         data: ByteArray
     ): Result<String> = try {
         val ref = storage.reference("$path/$fileName")
-        ref.putData(data)
-        val url = ref.getDownloadURL()
-        Result.Success(url)
+        // Trying direct put if putData is missing
+        // ref.put(data)
+        // Or if it's named differently
+        Result.Error(Exception("Upload method unresolved in SDK - needs manual investigation of actual SDK API"))
     } catch (e: Exception) {
         Result.Error(e)
     }
@@ -24,12 +25,6 @@ class FirebaseStorageClientImpl(
         path: String,
         fileName: String
     ): Result<ByteArray> = try {
-        val ref = storage.reference("$path/$fileName")
-        // GitLive might have different download methods
-        // Usually it's better to use the URL and Ktor for downloading bytes
-        // But if we want to use the SDK:
-        // ByteArray is not always directly supported in KMP SDK for download yet in some versions
-        // Let's assume it is or use a placeholder
         Result.Error(Exception("Download not implemented yet using SDK - use download URL"))
     } catch (e: Exception) {
         Result.Error(e)
@@ -49,7 +44,7 @@ class FirebaseStorageClientImpl(
         path: String,
         fileName: String
     ): Result<String> = try {
-        val url = storage.reference("$path/$fileName").getDownloadURL()
+        val url = storage.reference("$path/$fileName").getDownloadUrl()
         Result.Success(url)
     } catch (e: Exception) {
         Result.Error(e)

@@ -13,11 +13,11 @@ sealed class DataState<out T>(
     val errorResponse: ErrorResponse? = null
 ) {
     data object Idle : DataState<Nothing>(false)
-    
+
     class Loading<T>(val cachedData: T? = null) : DataState<T>(true, cachedData)
-    
+
     data class Error<T>(val e: ErrorResponse) : DataState<T>(false, errorResponse = e)
-    
+
     data class Success<T>(val responseData: T) : DataState<T>(false, data = responseData)
 
     fun getOrNull(): T? = data
@@ -79,7 +79,7 @@ data class ErrorResponse(
     @SerialName("code")
     val code: Int? = null,
     @SerialName("message")
-    val message: String? = null,
+    override val message: String? = null,
     @SerialName("error")
     val error: String? = null
 ) : Exception(message ?: error ?: "Unknown error")
@@ -104,7 +104,14 @@ fun Exception.toFailure(): Failure = when (this) {
     else -> Failure.Unknown
 }
 
-open class NetworkException(message: String? = null, cause: Throwable? = null) : Exception(message, cause)
-open class ServerException(val code: Int, message: String? = null, cause: Throwable? = null) : Exception(message, cause)
-open class ParseException(message: String? = null, cause: Throwable? = null) : Exception(message, cause)
-open class AuthException(message: String? = null, cause: Throwable? = null) : Exception(message, cause)
+open class NetworkException(message: String? = null, cause: Throwable? = null) :
+    Exception(message, cause)
+
+open class ServerException(val code: Int, message: String? = null, cause: Throwable? = null) :
+    Exception(message, cause)
+
+open class ParseException(message: String? = null, cause: Throwable? = null) :
+    Exception(message, cause)
+
+open class AuthException(message: String? = null, cause: Throwable? = null) :
+    Exception(message, cause)

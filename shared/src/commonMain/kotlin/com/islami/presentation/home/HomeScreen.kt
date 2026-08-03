@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Feedback
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -53,20 +53,20 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
-                        StatCard("Total Users", state.stats?.totalUsers?.toString() ?: "0", Icons.Default.People)
+                        StatCard("Total Users", state.stats?.totalUsers?.toString() ?: "0", Icons.Default.Person)
                     }
                     item {
-                        StatCard("Feedback", state.stats?.totalFeedback?.toString() ?: "0", Icons.Default.Feedback) {
+                        StatCard("Feedback", state.stats?.totalFeedback?.toString() ?: "0", Icons.Default.Email) {
                             navigator.navigateTo(Screen.Feedback)
                         }
                     }
                     item {
-                        StatCard("Quran Surahs", state.stats?.quranSurahs?.toString() ?: "0", Icons.Default.Book) {
+                        StatCard("Quran Surahs", state.stats?.quranSurahs?.toString() ?: "0", Icons.Default.Create) {
                             navigator.navigateTo(Screen.Quran)
                         }
                     }
                     item {
-                        StatCard("Hadith", state.stats?.totalHadith?.toString() ?: "0", Icons.Default.Book) {
+                        StatCard("Hadith", state.stats?.totalHadith?.toString() ?: "0", Icons.Default.Create) {
                             navigator.navigateTo(Screen.Hadith)
                         }
                     }

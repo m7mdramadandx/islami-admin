@@ -58,12 +58,13 @@ class FirebaseFirestoreClientImpl(
     ): Flow<Result<T>> {
         return firestore.collection(collection).document(documentId).snapshots.map { snapshot ->
             if (snapshot.exists) {
-                Result.Success(snapshot.data(serializer))
+                Result.Success(snapshot.data(serializer)) as Result<T>
             } else {
                 Result.Error(Exception("Document $documentId not found in $collection"))
             }
         }.catch { e ->
-            emit(Result.Error(Exception(e)))
+            val exception = if (e is Exception) e else Exception(e.message, e)
+            emit(Result.Error(exception))
         }
     }
 
@@ -73,9 +74,10 @@ class FirebaseFirestoreClientImpl(
     ): Flow<Result<List<T>>> {
         return firestore.collection(collection).snapshots.map { snapshot ->
             val data = snapshot.documents.map { it.data(serializer) }
-            Result.Success(data)
+            Result.Success(data) as Result<List<T>>
         }.catch { e ->
-            emit(Result.Error(Exception(e)))
+             val exception = e as? Exception ?: Exception(e.message, e)
+             emit(Result.Error(exception))
         }
     }
 

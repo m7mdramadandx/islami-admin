@@ -20,24 +20,6 @@ data class User(
 }
 
 @Serializable
-data class HomeStats(
-    @SerialName("totalUsers")
-    val totalUsers: Int,
-    @SerialName("totalFeedback")
-    val totalFeedback: Int,
-    @SerialName("totalHadith")
-    val totalHadith: Int,
-    @SerialName("quranSurahs")
-    val quranSurahs: Int,
-    @SerialName("quranAyahs")
-    val quranAyahs: Int,
-    @SerialName("feedbackRatePerThousandUsers")
-    val feedbackRatePerThousandUsers: Double,
-    @SerialName("appVersion")
-    val appVersion: String
-)
-
-@Serializable
 data class FeedbackMessage(
     val id: String,
     @SerialName("app_version")
@@ -128,14 +110,4 @@ data class Notification(
     val targetUsers: List<String>? = null,
     val targetDevices: List<String>? = null,
     val priority: String = "high"
-)
-
-@Serializable
-data class AppSettings(
-    val appVersion: String,
-    val maintenanceMode: Boolean = false,
-    val maintenanceMessage: String? = null,
-    val lastUpdateTime: Long = currentTimeMillis(),
-    val forceUpdateVersion: String? = null,
-    val analyticsEnabled: Boolean = true
 )

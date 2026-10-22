@@ -9,31 +9,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.islami.core.state.UiEvent
-import com.islami.presentation.navigation.Navigator
-import com.islami.presentation.navigation.Screen
 import org.koin.compose.koinInject
 
+/** Signing in flips [SessionStateHolder] to SignedIn, which moves the app to Home. */
 @Composable
 fun LoginScreen(
-    navigator: Navigator,
     stateHolder: LoginStateHolder = koinInject()
 ) {
     val state by stateHolder.state.collectAsState()
-    val event by stateHolder.event.collectAsState()
-    
-    var password by remember { mutableStateOf("") }
 
-    LaunchedEffect(event) {
-        when (event) {
-            is UiEvent.Navigate -> {
-                if ((event as UiEvent.Navigate).destination == "home") {
-                    navigator.navigateTo(Screen.Home)
-                }
-            }
-            else -> {}
-        }
-    }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),

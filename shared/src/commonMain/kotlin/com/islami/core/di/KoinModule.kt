@@ -6,7 +6,6 @@ import com.islami.data.remote.http.HttpClientImpl
 import com.islami.data.repository.*
 import com.islami.domain.repositories.*
 import com.islami.domain.usecases.auth.*
-import com.islami.domain.usecases.home.*
 import com.islami.domain.usecases.quran.*
 import com.islami.domain.usecases.feedback.*
 import com.islami.domain.usecases.hadith.*
@@ -47,7 +46,6 @@ fun commonModule(): Module = module {
             localDataSource = get()
         )
     }
-    single<HomeRepository> { HomeRepositoryImpl(get()) }
     single<FeedbackRepository> { FeedbackRepositoryImpl(get()) }
     single<QuranRepository> { QuranRepositoryImpl(get()) }
     single<HadithRepository> { HadithRepositoryImpl(get()) }
@@ -69,8 +67,6 @@ fun commonModule(): Module = module {
     single { LoginUseCase(get()) }
     single { LogoutUseCase(get()) }
     single { GetCurrentUserUseCase(get()) }
-    single { GetHomeStatsUseCase(get()) }
-    single { GetAppSettingsUseCase(get()) }
     single { GetAllSurahsUseCase(get()) }
     single { GetSurahAyahsUseCase(get()) }
     single { GetFeedbackMessagesUseCase(get()) }
@@ -80,8 +76,8 @@ fun commonModule(): Module = module {
     single { SendNotificationUseCase(get()) }
 
     // State Holders (ViewModels)
+    single { SessionStateHolder(get(), get()) }
     factory { LoginStateHolder(get()) }
-    factory { HomeStateHolder(get()) }
     factory { FeedbackStateHolder(get(), get()) }
     factory { QuranStateHolder(get()) }
     factory { HadithStateHolder(get()) }

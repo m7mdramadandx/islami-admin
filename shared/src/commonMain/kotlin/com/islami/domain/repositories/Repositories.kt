@@ -13,11 +13,6 @@ interface AuthRepository {
     suspend fun getCurrentUser(): User?
 }
 
-interface HomeRepository {
-    suspend fun getHomeStats(): Result<HomeStats>
-    suspend fun getAppSettings(): Result<AppSettings>
-}
-
 interface FeedbackRepository {
     suspend fun getFeedbackMessages(limit: Int = 100): Result<List<FeedbackMessage>>
     suspend fun getFeedbackMessage(id: String): Result<FeedbackMessage>

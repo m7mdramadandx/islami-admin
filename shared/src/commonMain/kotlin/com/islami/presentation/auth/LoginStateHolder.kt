@@ -1,8 +1,7 @@
 package com.islami.presentation.auth
 
 import com.islami.core.error.Result
-import com.islami.core.state.EventStateHolder
-import com.islami.core.state.UiEvent
+import com.islami.core.state.StateHolder
 import com.islami.domain.usecases.auth.LoginParams
 import com.islami.domain.usecases.auth.LoginUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +12,7 @@ import kotlinx.coroutines.launch
 class LoginStateHolder(
     private val loginUseCase: LoginUseCase,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-) : EventStateHolder<LoginState, UiEvent>(LoginState()) {
+) : StateHolder<LoginState>(LoginState()) {
 
     fun onEmailChanged(email: String) {
         updateState { it.copy(email = email, error = null) }
@@ -36,10 +35,6 @@ class LoginStateHolder(
                 is Result.Error -> it.copy(isLoading = false, error = result.exception.message)
                 is Result.Loading -> it // Should not happen with current UseCase pattern
             }
-        }
-
-        if (result is Result.Success) {
-            emitEvent(UiEvent.Navigate("home"))
         }
     }
 }

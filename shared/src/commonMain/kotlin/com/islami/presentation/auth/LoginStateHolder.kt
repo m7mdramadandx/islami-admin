@@ -7,12 +7,12 @@ import com.islami.domain.usecases.auth.LoginParams
 import com.islami.domain.usecases.auth.LoginUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class LoginStateHolder(
     private val loginUseCase: LoginUseCase,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) : EventStateHolder<LoginState, UiEvent>(LoginState()) {
 
     fun onEmailChanged(email: String) {

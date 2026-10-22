@@ -6,12 +6,12 @@ import com.islami.core.usecase.NoParams
 import com.islami.domain.usecases.quran.GetAllSurahsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class QuranStateHolder(
     private val getAllSurahsUseCase: GetAllSurahsUseCase,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) : StateHolder<QuranState>(QuranState()) {
 
     init {

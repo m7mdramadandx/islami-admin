@@ -8,13 +8,13 @@ import com.islami.domain.usecases.feedback.RespondToFeedbackParams
 import com.islami.domain.usecases.feedback.RespondToFeedbackUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class FeedbackStateHolder(
     private val getFeedbackMessagesUseCase: GetFeedbackMessagesUseCase,
     private val respondToFeedbackUseCase: RespondToFeedbackUseCase,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) : EventStateHolder<FeedbackState, UiEvent>(FeedbackState()) {
 
     init {

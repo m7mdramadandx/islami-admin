@@ -1,5 +1,6 @@
 package com.islami.data.repository
 
+import com.islami.core.time.currentTimeMillis
 import com.islami.core.error.Result
 import com.islami.data.remote.firebase.FirebaseFirestoreClient
 import com.islami.domain.entities.FeedbackMessage
@@ -35,7 +36,7 @@ class FeedbackRepositoryImpl(
         return firestoreClient.updateDocument(
             collection = "feedback",
             documentId = id,
-            data = mapOf("adminResponse" to response, "respondedAt" to System.currentTimeMillis())
+            data = mapOf("adminResponse" to response, "respondedAt" to currentTimeMillis())
         )
     }
 }

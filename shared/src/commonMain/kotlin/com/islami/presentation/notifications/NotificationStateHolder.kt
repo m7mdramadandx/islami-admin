@@ -7,13 +7,13 @@ import com.islami.domain.entities.Notification
 import com.islami.domain.usecases.notifications.SendNotificationUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class NotificationStateHolder(
     private val sendNotificationUseCase: SendNotificationUseCase,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) : EventStateHolder<NotificationState, UiEvent>(NotificationState()) {
 
     fun onTitleChanged(title: String) {

@@ -1,30 +1,26 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
-    js(IR) {
-        moduleName = "islami-admin"
-        browser()
+    js {
+        outputModuleName = "islami-admin"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "islami-admin.js"
+            }
+        }
         binaries.executable()
     }
 
     sourceSets {
-        val jsMain by getting {
-            dependencies {
-                implementation(project(":shared"))
-                implementation(libs.compose.runtime)
-                implementation(libs.compose.foundation)
-                implementation(libs.compose.material3)
-                implementation(libs.compose.ui)
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.koin.core)
-            }
+        jsMain.dependencies {
+            implementation(project(":shared"))
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.ui)
+            implementation(libs.koin.core)
         }
     }
-}
-
-compose.experimental {
-    web.application {}
 }

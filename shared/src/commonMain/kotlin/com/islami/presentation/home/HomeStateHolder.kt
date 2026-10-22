@@ -6,12 +6,12 @@ import com.islami.core.usecase.NoParams
 import com.islami.domain.usecases.home.GetHomeStatsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class HomeStateHolder(
     private val getHomeStatsUseCase: GetHomeStatsUseCase,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) : StateHolder<HomeState>(HomeState()) {
 
     init {

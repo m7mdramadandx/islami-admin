@@ -33,8 +33,6 @@ fun App() {
                 is Screen.Feedback -> FeedbackScreen(navigator)
                 is Screen.Notifications -> NotificationScreen(navigator)
                 is Screen.Azkar -> AzkarScreen(navigator)
-                // Add other screens here as they are implemented
-                else -> {}
             }
         }
     }

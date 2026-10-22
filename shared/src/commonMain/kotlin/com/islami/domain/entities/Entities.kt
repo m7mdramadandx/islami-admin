@@ -1,5 +1,6 @@
 package com.islami.domain.entities
 
+import com.islami.core.time.currentTimeMillis
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,8 +11,8 @@ data class User(
     val displayName: String? = null,
     val photoUrl: String? = null,
     val isEmailVerified: Boolean = false,
-    val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val createdAt: Long = currentTimeMillis(),
+    val updatedAt: Long = currentTimeMillis()
 ) {
     companion object {
         fun empty() = User(uid = "", email = null)
@@ -111,7 +112,7 @@ data class AdminUser(
     val displayName: String? = null,
     val role: String,
     val permissions: List<String> = emptyList(),
-    val createdAt: Long = System.currentTimeMillis(),
+    val createdAt: Long = currentTimeMillis(),
     val lastLogin: Long? = null,
     val isActive: Boolean = true
 )
@@ -123,7 +124,7 @@ data class Notification(
     val body: String,
     val imageUrl: String? = null,
     val deepLink: String? = null,
-    val sentAt: Long = System.currentTimeMillis(),
+    val sentAt: Long = currentTimeMillis(),
     val targetUsers: List<String>? = null,
     val targetDevices: List<String>? = null,
     val priority: String = "high"
@@ -134,7 +135,7 @@ data class AppSettings(
     val appVersion: String,
     val maintenanceMode: Boolean = false,
     val maintenanceMessage: String? = null,
-    val lastUpdateTime: Long = System.currentTimeMillis(),
+    val lastUpdateTime: Long = currentTimeMillis(),
     val forceUpdateVersion: String? = null,
     val analyticsEnabled: Boolean = true
 )

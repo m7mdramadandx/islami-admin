@@ -46,7 +46,7 @@ fun commonModule(): Module = module {
             localDataSource = get()
         )
     }
-    single<FeedbackRepository> { FeedbackRepositoryImpl(get()) }
+    single<FeedbackRepository> { FeedbackRepositoryImpl(firestore = get()) }
     single<QuranRepository> { QuranRepositoryImpl(get()) }
     single<HadithRepository> { HadithRepositoryImpl(get()) }
     single<AzkarRepository> { AzkarRepositoryImpl(get()) }
@@ -69,8 +69,8 @@ fun commonModule(): Module = module {
     single { GetCurrentUserUseCase(get()) }
     single { GetAllSurahsUseCase(get()) }
     single { GetSurahAyahsUseCase(get()) }
-    single { GetFeedbackMessagesUseCase(get()) }
-    single { RespondToFeedbackUseCase(get()) }
+    single { ObserveFeedbackMessagesUseCase(get()) }
+    single { DeleteFeedbackMessageUseCase(get()) }
     single { GetAllHadithUseCase(get()) }
     single { GetAzkarUseCase(get()) }
     single { SendNotificationUseCase(get()) }

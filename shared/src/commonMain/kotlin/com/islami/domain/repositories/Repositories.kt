@@ -14,10 +14,8 @@ interface AuthRepository {
 }
 
 interface FeedbackRepository {
-    suspend fun getFeedbackMessages(limit: Int = 100): Result<List<FeedbackMessage>>
-    suspend fun getFeedbackMessage(id: String): Result<FeedbackMessage>
+    fun observeFeedbackMessages(): Flow<Result<List<FeedbackMessage>>>
     suspend fun deleteFeedbackMessage(id: String): Result<Unit>
-    suspend fun respondToFeedback(id: String, response: String): Result<Unit>
 }
 
 interface QuranRepository {

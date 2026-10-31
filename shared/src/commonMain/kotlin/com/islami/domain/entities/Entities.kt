@@ -109,5 +109,15 @@ data class Notification(
     val sentAt: Long = currentTimeMillis(),
     val targetUsers: List<String>? = null,
     val targetDevices: List<String>? = null,
-    val priority: String = "high"
+    val priority: String = "high",
+    /** FCM topic to broadcast to; ignored when [fcmToken] is set. */
+    val topic: String? = null,
+    /** Single device token; takes priority over [topic]. */
+    val fcmToken: String? = null,
+    /** Islami app `RouteType` id the notification opens (0 = dashboard). */
+    val routeId: Int = 0,
+    /** Screen-specific id, e.g. an azkar category. */
+    val extraRouteId: Int = 0,
+    /** Devices on an older app version drop the notification. */
+    val minVersion: String? = null
 )

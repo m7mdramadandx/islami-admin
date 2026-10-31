@@ -21,6 +21,7 @@ import com.islami.presentation.azkar.*
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
+import dev.gitlive.firebase.functions.functions
 import dev.gitlive.firebase.storage.storage
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -30,6 +31,7 @@ fun commonModule(): Module = module {
     single { Firebase.auth }
     single { Firebase.firestore }
     single { Firebase.storage }
+    single { Firebase.functions }
 
     // Firebase Clients (Wrappers)
     single<FirebaseAuthClient> { FirebaseAuthClientImpl(get()) }
@@ -52,7 +54,7 @@ fun commonModule(): Module = module {
     single<AzkarRepository> { AzkarRepositoryImpl(get()) }
     single<DuasRepository> { DuasRepositoryImpl(get()) }
     single<UserManagementRepository> { UserManagementRepositoryImpl(get()) }
-    single<NotificationRepository> { NotificationRepositoryImpl(get()) }
+    single<NotificationRepository> { NotificationRepositoryImpl(get(), get()) }
     single<SyncRepository> {
         SyncRepositoryImpl(
             httpClient = get(),

@@ -1,29 +1,53 @@
-
 # Islami Admin
 
-This is the admin panel for the Islami app. It is a Flutter application that allows admins to manage the content of the app.
+Admin dashboard for the Islami mobile app, built with Kotlin Multiplatform and Compose Multiplatform.
+It runs on the web and Android and works directly against the app's Firebase project (`islami-ecc03`).
 
 ## Features
 
-- **Quran Management:** Manage the Quranic text and translations.
-- **Hadith Management:** Manage the hadith collections.
-- **User Management:** Manage users and their roles.
-- **Notification Management:** Send notifications to users.
-- **Azkar Management:** Manage the azkar (remembrances).
-- **Duas Management:** Manage the duas (supplications).
+- **Azkar & Duas**: edit `json/azkar.json` and `json/duas.json` in Storage, the files the app
+  downloads. Publishing backs up the live file to `json/backups/`, then bumps `azkarVersion` /
+  `duasVersion` in `root/version` so apps fetch the update.
+- **Notifications**: send FCM pushes to a topic or one device through the `sendFcmNotification`
+  Cloud Function (`functions/`).
+- **Feedback**: read and delete messages users send from the app.
+- **App Releases**: edit `storeVersion`, `minVersion` and release notes in `root/version`. Changes
+  are recorded in `root/version/history`.
 
-## Getting Started
+## Project layout
 
-This project is a starting point for a Flutter application.
+- `shared/`: all app code (domain, data, Compose UI), shared by every platform.
+- `web/`: browser entry point (Kotlin/JS).
+- `android/`: Android entry point.
+- `functions/`: Firebase Cloud Functions.
+- `cors.json`: Storage bucket CORS config; the web app needs it to download the JSON files.
 
-A few resources to get you started if this is your first Flutter project:
+## Running
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```sh
+# Web, at http://localhost:8080 (the port is fixed so the saved login survives restarts)
+./gradlew :web:jsBrowserDevelopmentRun
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Android
+./gradlew :android:installDebug
+
+# Tests (the Compose check otherwise blocks plain JS logic tests)
+./gradlew :shared:jsBrowserTest -x checkComposeUiTestConfigurationForJs
+```
+
+## Deploying the web dashboard
+
+Firebase Hosting serves the production web build from `web/build/dist/js/productionExecutable`,
+so always build right before deploying:
+
+```sh
+./gradlew :web:jsBrowserDistribution
+firebase deploy --only hosting
+```
+
+Source maps are not uploaded. Every file is sent with `Cache-Control: no-cache` because the bundle
+names (`islami-admin.js`, `skiko.wasm`) don't change between builds; browsers still cache them but
+check for a new version on each load.
 
 ## Notification sending IAM fix
 
@@ -41,7 +65,3 @@ the Cloud Functions runtime service account is missing FCM permissions.
    (`roles/firebasecloudmessaging.admin`).
 4. Ensure the `Firebase Cloud Messaging API` is enabled.
 5. Retry sending from the admin panel.
-
-## Dashboard app version
-
-The home dashboard reads the displayed app version from Firestore document `config/app`, field `version` (for example `1.2.3`). If missing, it shows `unknown`.

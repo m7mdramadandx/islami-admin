@@ -1,165 +1,158 @@
 package com.islami.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import islami_kmp.shared.generated.resources.Res
+import islami_kmp.shared.generated.resources.cairo_bold
+import islami_kmp.shared.generated.resources.cairo_medium
+import islami_kmp.shared.generated.resources.cairo_regular
+import islami_kmp.shared.generated.resources.cairo_semibold
+import org.jetbrains.compose.resources.Font
 
-private val sage = Color(0xFF4A6B52)
-private val darkForest = Color(0xFF052A22)
-private val vibrantYellow = Color(0xFFFFBA00)
+/**
+ * Brand colors that stay the same in light and dark mode, for the deep-green header bands on the
+ * login and home screens. Everything else should use [MaterialTheme.colorScheme].
+ */
+object IslamiBrand {
+    val Forest = Color(0xFF052A22)
+    val OnForest = Color(0xFFFFFFFF)
+    val Gold = Color(0xFFFFBA00)
+}
 
-private val sageDarkTheme = Color(0xFF5A7F62)
-private val vibrantYellowDarkTheme = Color(0xFFFFC233)
-
-private val appBar = darkForest
-private val appBarDark = Color(0xFF040F0C)
-
-private val primary = sage
-private val primaryDark = sageDarkTheme
-
-private val secondary = darkForest
-private val secondaryDark = darkForest
-
-private val accent = vibrantYellow
-private val accentDark = vibrantYellowDarkTheme
-
-private val background = Color(0xFFF7F4EF)
-private val backgroundDark = Color(0xFF040F0C)
-
-private val whiteSolid = Color(0xFFFFFFFF)
-private val blackSolid = Color(0xFF000000)
-
-private val white = Color(0xFFFFFFFF)
-private val whiteDark = Color(0xFF000000)
-
-private val black = Color(0xFF000000)
-private val blackDark = Color(0xFFFFFFFF)
-
-private val grey = Color(0xFF5C5A56)
-private val greyDark = Color(0xFFA8B8B2)
-
-private val popUp = Color(0xFFFFFCF9)
-private val popUpDark = Color(0xFF0F352C)
-
-private val buttonSecondary = Color(0xFFEEE9E0)
-private val buttonSecondaryDark = Color(0xFF18423A)
-
-private val dimmed = Color(0xFFEEE9E0)
-private val dimmedDark = Color(0x6618423A)
-
-
-private val border = Color(0xFFE5E0D6)
-private val borderDark = Color(0xFF245447)
-
-// Align with core `values` / `values-night` color resources (natural scale, info, frames).
-private val neutral50Light = Color(0xFFFFFCF9)
-private val neutral50Dark = Color(0xFF040F0C)
-
-private val neutral100Light = Color(0xFFF7F4EF)
-private val neutral100Dark = Color(0xFF052A22)
-
-private val neutral200Light = Color(0xFFEEE9E0)
-private val neutral200Dark = Color(0xFF0F352C)
-
-private val neutral500Light = Color(0xFF6B6660)
-private val neutral500Dark = Color(0xFF7A9188)
-
-private val neutral600Light = Color(0xFF4A4742)
-private val neutral600Dark = Color(0xFFA8B8B2)
-
-private val neutral700Light = Color(0xFF383532)
-private val neutral700Dark = Color(0xFFC5D1CC)
-
-private val neutral800Light = Color(0xFF242220)
-private val neutral800Dark = Color(0xFFE0E8E5)
-
-private val neutral900Light = Color(0xFF141211)
-private val neutral900Dark = Color(0xFFF5F9F7)
-
-private val silverGreyLight = Color(0xFFEEE9E0)
-private val silverGreyDark = Color(0xFF18423A)
-
-private val whiteSilverLight = Color(0xFFFFFFFF)
-private val whiteSilverDark = Color(0xFFE8F0ED)
-
-private val infoLight = Color(0xFF3b82f6)
-private val infoDark = Color(0xFFA8B8B2)
-
-private val successLight = Color(0xFF198754)
-private val successDark = Color(0xFF5A7F62)
-
-private val frameRed = Color(0xFFD72323)
-private val frameGreen = Color(0xFF1F612A)
-private val frameBlueLight = Color(0xFF3b82f6)
-private val frameBlueDark = Color(0xFF445DEB)
-
-private val error = Color(0xFFAC0303)
-
-// Native MaterialTheme Colors
-val LightColorScheme = lightColorScheme(
-    primary = primary,
-    onPrimary = white,
-    primaryContainer = sage.copy(alpha = 0.85f),
-    onPrimaryContainer = darkForest,
-    secondary = secondary,
-    onSecondary = white,
-    secondaryContainer = darkForest.copy(alpha = 0.85f),
-    onSecondaryContainer = white,
-    tertiary = accent,
-    onTertiary = darkForest,
-    background = background,
-    onBackground = Color(0xFF242220),
-    surface = whiteSolid,
-    onSurface = Color(0xFF242220),
-    surfaceVariant = popUp,
-    onSurfaceVariant = grey,
-    error = error,
-    onError = white,
-    outline = border,
-    outlineVariant = border.copy(alpha = 0.7f),
-    inverseSurface = darkForest,
-    inverseOnSurface = white,
+// Every Material 3 role is set: unset ones fall back to the default purple/pink palette.
+// Built from the mobile app's sage, forest and gold, on warm cream neutrals.
+val LightColorScheme: ColorScheme = lightColorScheme(
+    primary = Color(0xFF4A6B52),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFCCE8D2),
+    onPrimaryContainer = Color(0xFF0A2614),
+    inversePrimary = Color(0xFFA6D0AE),
+    secondary = Color(0xFF052A22),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFD5E8E0),
+    onSecondaryContainer = Color(0xFF052A22),
+    // Brand gold (#FFBA00) is unreadable as text on cream, so the role uses a deep amber;
+    // IslamiBrand.Gold is for gold on the forest header.
+    tertiary = Color(0xFF7D5800),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFFFDEA6),
+    onTertiaryContainer = Color(0xFF271900),
+    error = Color(0xFFAC0303),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFFDAD5),
+    onErrorContainer = Color(0xFF410001),
+    background = Color(0xFFF7F4EF),
+    onBackground = Color(0xFF1E1C19),
+    surface = Color(0xFFFCFAF6),
+    onSurface = Color(0xFF1E1C19),
+    surfaceVariant = Color(0xFFEDE7DC),
+    onSurfaceVariant = Color(0xFF57534C),
+    surfaceTint = Color(0xFF4A6B52),
+    inverseSurface = Color(0xFF33302B),
+    inverseOnSurface = Color(0xFFF6F0E7),
+    outline = Color(0xFF857F75),
+    outlineVariant = Color(0xFFD8D1C5),
+    scrim = Color(0xFF000000),
+    surfaceBright = Color(0xFFFCFAF6),
+    surfaceDim = Color(0xFFE2DCD2),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFF8F4EE),
+    surfaceContainer = Color(0xFFF2EDE5),
+    surfaceContainerHigh = Color(0xFFECE6DD),
+    surfaceContainerHighest = Color(0xFFE6E0D6),
 )
 
-val DarkColorScheme = darkColorScheme(
-    primary = primaryDark,
-    onPrimary = darkForest,
-    primaryContainer = sageDarkTheme.copy(alpha = 0.35f),
-    onPrimaryContainer = Color(0xFFE0E8E5),
-    secondary = secondaryDark,
-    onSecondary = white,
+// Forest-tinted neutrals; accents are lightened so text keeps contrast on the dark background.
+val DarkColorScheme: ColorScheme = darkColorScheme(
+    primary = Color(0xFFA6D0AE),
+    onPrimary = Color(0xFF0F3A1E),
+    primaryContainer = Color(0xFF2F5238),
+    onPrimaryContainer = Color(0xFFCCE8D2),
+    inversePrimary = Color(0xFF4A6B52),
+    secondary = Color(0xFFB4CCC3),
+    onSecondary = Color(0xFF0B2A22),
     secondaryContainer = Color(0xFF18423A),
-    onSecondaryContainer = Color(0xFFE0E8E5),
-    tertiary = accentDark,
-    onTertiary = darkForest,
-    background = backgroundDark,
-    onBackground = Color(0xFFF5F9F7),
-    surface = appBarDark,
-    onSurface = Color(0xFFF5F9F7),
-    surfaceVariant = popUpDark,
-    onSurfaceVariant = greyDark,
-    error = error,
-    onError = white,
-    outline = borderDark,
-    outlineVariant = borderDark.copy(alpha = 0.7f),
-    inverseSurface = sageDarkTheme,
-    inverseOnSurface = darkForest,
+    onSecondaryContainer = Color(0xFFD5E8E0),
+    tertiary = Color(0xFFFFC233),
+    onTertiary = Color(0xFF3F2D00),
+    tertiaryContainer = Color(0xFF5C4200),
+    onTertiaryContainer = Color(0xFFFFDEA6),
+    error = Color(0xFFFFB4AB),
+    onError = Color(0xFF690005),
+    errorContainer = Color(0xFF93000A),
+    onErrorContainer = Color(0xFFFFDAD6),
+    background = Color(0xFF07110E),
+    onBackground = Color(0xFFE1E9E5),
+    surface = Color(0xFF07110E),
+    onSurface = Color(0xFFE1E9E5),
+    surfaceVariant = Color(0xFF263A33),
+    onSurfaceVariant = Color(0xFFAFC1BA),
+    surfaceTint = Color(0xFFA6D0AE),
+    inverseSurface = Color(0xFFE1E9E5),
+    inverseOnSurface = Color(0xFF1A2420),
+    outline = Color(0xFF7A8E87),
+    outlineVariant = Color(0xFF2C413A),
+    scrim = Color(0xFF000000),
+    surfaceBright = Color(0xFF2B3833),
+    surfaceDim = Color(0xFF07110E),
+    surfaceContainerLowest = Color(0xFF040C0A),
+    surfaceContainerLow = Color(0xFF0E1A16),
+    surfaceContainer = Color(0xFF12201B),
+    surfaceContainerHigh = Color(0xFF1B2A25),
+    surfaceContainerHighest = Color(0xFF26352F),
 )
+
+/**
+ * Cairo covers Arabic and Latin in one family. On the web it is also what makes Arabic render at
+ * all, since Compose there draws text with bundled fonts only.
+ */
+@Composable
+private fun cairoTypography(): Typography {
+    val cairo = FontFamily(
+        Font(Res.font.cairo_regular, FontWeight.Normal),
+        Font(Res.font.cairo_medium, FontWeight.Medium),
+        Font(Res.font.cairo_semibold, FontWeight.SemiBold),
+        Font(Res.font.cairo_bold, FontWeight.Bold),
+    )
+    fun TextStyle.cairo() = copy(fontFamily = cairo)
+    return with(Typography()) {
+        Typography(
+            displayLarge = displayLarge.cairo(),
+            displayMedium = displayMedium.cairo(),
+            displaySmall = displaySmall.cairo(),
+            headlineLarge = headlineLarge.cairo(),
+            headlineMedium = headlineMedium.cairo(),
+            headlineSmall = headlineSmall.cairo(),
+            titleLarge = titleLarge.cairo(),
+            titleMedium = titleMedium.cairo(),
+            titleSmall = titleSmall.cairo(),
+            bodyLarge = bodyLarge.cairo(),
+            bodyMedium = bodyMedium.cairo(),
+            bodySmall = bodySmall.cairo(),
+            labelLarge = labelLarge.cairo(),
+            labelMedium = labelMedium.cairo(),
+            labelSmall = labelSmall.cairo(),
+        )
+    }
+}
 
 @Composable
 fun IslamiTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography(),
+        colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme,
+        typography = cairoTypography(),
         content = content
     )
 }

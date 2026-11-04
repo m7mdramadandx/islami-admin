@@ -4,16 +4,22 @@
     "runtime": "nodejs20"
   },
   "hosting": {
-    "public": "build/web",
+    "public": "web/build/dist/js/productionExecutable",
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "**/*.map"
     ],
-    "rewrites": [
+    "headers": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
       }
     ]
   }

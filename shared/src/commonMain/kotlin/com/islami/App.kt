@@ -15,11 +15,10 @@ import com.islami.presentation.auth.LoginScreen
 import com.islami.presentation.auth.SessionState
 import com.islami.presentation.auth.SessionStateHolder
 import com.islami.presentation.home.HomeScreen
-import com.islami.presentation.quran.QuranScreen
-import com.islami.presentation.hadith.HadithScreen
 import com.islami.presentation.feedback.FeedbackScreen
 import com.islami.presentation.notifications.NotificationScreen
-import com.islami.presentation.azkar.AzkarScreen
+import com.islami.presentation.content.ContentScreen
+import com.islami.presentation.release.AppReleaseScreen
 import com.islami.presentation.navigation.Screen
 import com.islami.presentation.navigation.rememberNavigator
 import com.islami.presentation.theme.IslamiTheme
@@ -49,12 +48,15 @@ fun App() {
 
                 when (navigator.currentScreen) {
                     is Screen.Login -> LoginScreen()
-                    is Screen.Home -> HomeScreen(navigator, onLogout = session::logout)
-                    is Screen.Quran -> QuranScreen(navigator)
-                    is Screen.Hadith -> HadithScreen(navigator)
+                    is Screen.Home -> HomeScreen(
+                        navigator,
+                        email = (sessionState as? SessionState.SignedIn)?.user?.email,
+                        onLogout = session::logout
+                    )
                     is Screen.Feedback -> FeedbackScreen(navigator)
                     is Screen.Notifications -> NotificationScreen(navigator)
-                    is Screen.Azkar -> AzkarScreen(navigator)
+                    is Screen.Content -> ContentScreen(navigator)
+                    is Screen.Releases -> AppReleaseScreen(navigator)
                 }
             }
         }

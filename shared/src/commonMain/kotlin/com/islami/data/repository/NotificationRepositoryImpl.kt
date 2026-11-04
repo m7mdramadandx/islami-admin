@@ -5,7 +5,6 @@ import com.islami.data.remote.firebase.FirebaseFirestoreClient
 import com.islami.domain.entities.Notification
 import com.islami.domain.repositories.NotificationRepository
 import dev.gitlive.firebase.functions.FirebaseFunctions
-import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -21,8 +20,10 @@ class NotificationRepositoryImpl(
      */
     override suspend fun sendNotification(notification: Notification): Result<Unit> {
         try {
+            // Use the reified overload: in gitlive 2.7.0 invoke(strategy, data) re-encodes the
+            // already-encoded value as `Any`, failing with "Serializer for class 'Any' is not found".
             functions.httpsCallable(SEND_FUNCTION)
-                .invoke(SendFcmRequest.serializer(), SendFcmRequest(notification.toPayload()))
+                .invoke(SendFcmRequest(notification.toPayload()))
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -32,30 +33,10 @@ class NotificationRepositoryImpl(
         firestoreClient.setDocument(
             collection = COLLECTION,
             documentId = notification.id,
-            data = notification
+            data = notification,
+            serializer = Notification.serializer()
         )
         return Result.Success(Unit)
-    }
-
-    override suspend fun getAllNotifications(): Result<List<Notification>> {
-        return firestoreClient.getCollection(
-            collection = COLLECTION,
-            serializer = Notification.serializer()
-        )
-    }
-
-    override suspend fun deleteNotification(id: String): Result<Unit> {
-        return firestoreClient.deleteDocument(
-            collection = COLLECTION,
-            documentId = id
-        )
-    }
-
-    override fun observeNotifications(): Flow<Result<List<Notification>>> {
-        return firestoreClient.observeCollection(
-            collection = COLLECTION,
-            serializer = Notification.serializer()
-        )
     }
 
     private fun Notification.toPayload() = FcmPayload(

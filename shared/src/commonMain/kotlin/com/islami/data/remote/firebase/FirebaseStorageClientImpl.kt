@@ -1,51 +1,50 @@
 package com.islami.data.remote.firebase
 
 import com.islami.core.error.Result
+import dev.gitlive.firebase.storage.Data
 import dev.gitlive.firebase.storage.FirebaseStorage
+import dev.gitlive.firebase.storage.FirebaseStorageMetadata
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.http.isSuccess
+import kotlin.coroutines.cancellation.CancellationException
+
+/** Storage's upload API takes a platform buffer (ByteArray, Uint8Array or NSData). */
+expect fun ByteArray.toStorageData(): Data
 
 class FirebaseStorageClientImpl(
-    private val storage: FirebaseStorage
+    private val storage: FirebaseStorage,
+    /**
+     * A bare client on purpose: the shared API client sends `Content-Type: application/json` on
+     * every request, which makes browsers preflight the download and the bucket CORS rejects it.
+     */
+    private val http: HttpClient = HttpClient()
 ) : FirebaseStorageClient {
 
-    override suspend fun uploadFile(
-        path: String,
-        fileName: String,
-        data: ByteArray
-    ): Result<String> = try {
-        val ref = storage.reference("$path/$fileName")
-        // Trying direct put if putData is missing
-        // ref.put(data)
-        // Or if it's named differently
-        Result.Error(Exception("Upload method unresolved in SDK - needs manual investigation of actual SDK API"))
-    } catch (e: Exception) {
-        Result.Error(e)
+    override suspend fun upload(path: String, data: ByteArray, contentType: String?): Result<Unit> = attempt {
+        storage.reference(path).putData(data.toStorageData(), FirebaseStorageMetadata(contentType = contentType))
     }
 
-    override suspend fun downloadFile(
-        path: String,
-        fileName: String
-    ): Result<ByteArray> = try {
-        Result.Error(Exception("Download not implemented yet using SDK - use download URL"))
-    } catch (e: Exception) {
-        Result.Error(e)
+    // gitlive has no common getBytes(), so fetch through the (token-bearing) download URL.
+    override suspend fun download(path: String): Result<ByteArray> = attempt {
+        val response = http.get(storage.reference(path).getDownloadUrl())
+        if (!response.status.isSuccess()) throw Exception("Download of $path failed: HTTP ${response.status.value}")
+        response.body<ByteArray>()
     }
 
-    override suspend fun deleteFile(
-        path: String,
-        fileName: String
-    ): Result<Unit> = try {
-        storage.reference("$path/$fileName").delete()
-        Result.Success(Unit)
-    } catch (e: Exception) {
-        Result.Error(e)
+    override suspend fun md5Hash(path: String): Result<String?> = attempt {
+        storage.reference(path).getMetadata()?.md5Hash
     }
 
-    override suspend fun getDownloadUrl(
-        path: String,
-        fileName: String
-    ): Result<String> = try {
-        val url = storage.reference("$path/$fileName").getDownloadUrl()
-        Result.Success(url)
+    override suspend fun list(folder: String): Result<List<String>> = attempt {
+        storage.reference(folder).listAll().items.map { it.path }
+    }
+
+    private inline fun <T> attempt(block: () -> T): Result<T> = try {
+        Result.Success(block())
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         Result.Error(e)
     }

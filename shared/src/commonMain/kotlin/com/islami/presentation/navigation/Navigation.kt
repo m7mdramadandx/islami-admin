@@ -1,20 +1,16 @@
 package com.islami.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 
 sealed class Screen {
     data object Login : Screen()
     data object Home : Screen()
-    data object Quran : Screen()
-    data object Hadith : Screen()
     data object Feedback : Screen()
     data object Notifications : Screen()
-    data object Azkar : Screen()
+    data object Content : Screen()
+    data object Releases : Screen()
 }
 
 class Navigator(initialScreen: Screen = Screen.Login) {

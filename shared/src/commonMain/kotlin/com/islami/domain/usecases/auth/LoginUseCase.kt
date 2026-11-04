@@ -12,5 +12,3 @@ class LoginUseCase(
         return authRepository.login(params.email, params.password)
     }
 }
-
-data class LoginParams(val email: String, val password: String)

@@ -7,10 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface AuthRepository {
     fun currentUser(): Flow<User?>
     suspend fun login(email: String, password: String): Result<User>
-    suspend fun signup(email: String, password: String, displayName: String): Result<User>
     suspend fun logout(): Result<Unit>
-    suspend fun resetPassword(email: String): Result<Unit>
-    suspend fun getCurrentUser(): User?
 }
 
 interface FeedbackRepository {
@@ -18,58 +15,41 @@ interface FeedbackRepository {
     suspend fun deleteFeedbackMessage(id: String): Result<Unit>
 }
 
-interface QuranRepository {
-    suspend fun getAllSurahs(): Result<List<Surah>>
-    suspend fun getSurah(number: Int): Result<Surah>
-    suspend fun getSurahAyahs(surahNumber: Int): Result<List<Ayah>>
-    suspend fun searchAyahs(query: String): Result<List<Ayah>>
-    fun observeSurahs(): Flow<Result<List<Surah>>>
+interface ContentRepository {
+    suspend fun load(kind: ContentKind): Result<ContentSnapshot>
+
+    /**
+     * Backs up the live file, uploads [document] and bumps the app's version number. Fails with
+     * [com.islami.domain.entities.ContentConflictException] if the live file no longer matches
+     * [base], unless [overwrite] is set.
+     */
+    suspend fun publish(
+        kind: ContentKind,
+        document: ContentDocument,
+        base: ContentSnapshot,
+        overwrite: Boolean
+    ): Result<ContentSnapshot>
+
+    /** Makes apps re-download the file; also the retry for a [publish] whose bump failed. */
+    suspend fun bumpVersion(kind: ContentKind): Result<Int>
+
+    suspend fun listBackups(kind: ContentKind): Result<List<ContentBackup>>
+    suspend fun loadBackup(kind: ContentKind, backup: ContentBackup): Result<ContentDocument>
 }
 
-interface HadithRepository {
-    suspend fun getAllHadith(): Result<List<Hadith>>
-    suspend fun getHadithByBook(book: String): Result<List<Hadith>>
-    suspend fun searchHadith(query: String): Result<List<Hadith>>
-    fun observeHadith(): Flow<Result<List<Hadith>>>
-}
+interface AppReleaseRepository {
+    suspend fun load(): Result<AppReleaseSnapshot>
 
-interface AzkarRepository {
-    suspend fun getAzkar(): Result<List<Azkar>>
-    suspend fun getAzkarByCategory(category: String): Result<Azkar>
-    suspend fun saveAzkar(azkar: Azkar): Result<Unit>
-    fun observeAzkar(): Flow<Result<List<Azkar>>>
-}
+    /**
+     * Writes the release fields of `root/version` and records the change in history. Fails with
+     * [com.islami.domain.entities.AppReleaseConflictException] if the live config no longer matches
+     * [base], unless [overwrite] is set.
+     */
+    suspend fun save(config: AppReleaseConfig, base: AppReleaseConfig, overwrite: Boolean): Result<AppReleaseSnapshot>
 
-interface DuasRepository {
-    suspend fun getAllDuas(): Result<List<Dua>>
-    suspend fun getDuasByCategory(category: String): Result<List<Dua>>
-    suspend fun searchDuas(query: String): Result<List<Dua>>
-    suspend fun saveDua(dua: Dua): Result<Unit>
-    fun observeDuas(): Flow<Result<List<Dua>>>
-}
-
-interface UserManagementRepository {
-    suspend fun getAllAdminUsers(): Result<List<AdminUser>>
-    suspend fun getAdminUser(uid: String): Result<AdminUser>
-    suspend fun createAdminUser(user: AdminUser, password: String): Result<Unit>
-    suspend fun updateAdminUser(user: AdminUser): Result<Unit>
-    suspend fun deleteAdminUser(uid: String): Result<Unit>
-    suspend fun updateUserRole(uid: String, role: String): Result<Unit>
-    fun observeAdminUsers(): Flow<Result<List<AdminUser>>>
+    suspend fun history(): Result<List<AppReleaseHistoryEntry>>
 }
 
 interface NotificationRepository {
     suspend fun sendNotification(notification: Notification): Result<Unit>
-    suspend fun getAllNotifications(): Result<List<Notification>>
-    suspend fun deleteNotification(id: String): Result<Unit>
-    fun observeNotifications(): Flow<Result<List<Notification>>>
-}
-
-interface SyncRepository {
-    suspend fun syncAll(): Result<Unit>
-    suspend fun syncQuran(): Result<Unit>
-    suspend fun syncHadith(): Result<Unit>
-    suspend fun syncAzkar(): Result<Unit>
-    suspend fun syncDuas(): Result<Unit>
-    fun observeSyncProgress(): Flow<Int> // Returns percentage 0-100
 }

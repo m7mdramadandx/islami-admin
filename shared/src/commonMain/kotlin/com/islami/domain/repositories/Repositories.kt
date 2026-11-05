@@ -2,7 +2,7 @@ package com.islami.domain.repositories
 
 import com.islami.core.error.Result
 import com.islami.domain.entities.*
-import com.islami.domain.ramadan.BackgroundImageType
+import com.islami.domain.images.ImageType
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -19,11 +19,7 @@ interface FeedbackRepository {
 interface ContentRepository {
     suspend fun load(kind: ContentKind): Result<ContentSnapshot>
 
-    /**
-     * Backs up the live file, uploads [document] and bumps the app's version number. Fails with
-     * [com.islami.domain.entities.ContentConflictException] if the live file no longer matches
-     * [base], unless [overwrite] is set.
-     */
+    /** Backs up, uploads and bumps the version; fails on a conflict with [base] unless [overwrite]. */
     suspend fun publish(
         kind: ContentKind,
         document: ContentDocument,
@@ -41,11 +37,7 @@ interface ContentRepository {
 interface AppReleaseRepository {
     suspend fun load(): Result<AppReleaseSnapshot>
 
-    /**
-     * Writes the release fields of `root/version` and records the change in history. Fails with
-     * [com.islami.domain.entities.AppReleaseConflictException] if the live config no longer matches
-     * [base], unless [overwrite] is set.
-     */
+    /** Writes `root/version` and logs history; fails on a conflict with [base] unless [overwrite]. */
     suspend fun save(config: AppReleaseConfig, base: AppReleaseConfig, overwrite: Boolean): Result<AppReleaseSnapshot>
 
     suspend fun history(): Result<List<AppReleaseHistoryEntry>>
@@ -54,17 +46,28 @@ interface AppReleaseRepository {
 interface RamadanRepository {
     suspend fun loadDays(): Result<List<RamadanDay>>
 
-    /**
-     * Writes the [changed] days in one batch. Fails with
-     * [com.islami.domain.entities.RamadanConflictException] if any of them no longer match [base],
-     * unless [overwrite] is set.
-     */
+    /** Writes [changed] in one batch; fails on a conflict with [base] unless [overwrite]. */
     suspend fun saveDays(changed: List<RamadanDay>, base: List<RamadanDay>, overwrite: Boolean): Result<List<RamadanDay>>
+}
 
-    suspend fun listBackgrounds(): Result<List<RamadanBackground>>
+interface StoriesRepository {
+    suspend fun loadStories(): Result<List<Story>>
 
-    /** Uploads to Storage `islamic_pictures/` under a new random name. */
-    suspend fun uploadBackground(bytes: ByteArray, type: BackgroundImageType): Result<RamadanBackground>
+    /** Backs up, then updates; fails on a conflict with [base] unless [overwrite]. */
+    suspend fun saveStory(story: Story, base: Story, overwrite: Boolean): Result<Story>
+
+    /** Fails with [com.islami.domain.entities.StoryExistsException] if the id is taken. */
+    suspend fun createStory(story: Story): Result<Story>
+
+    /** Backs up, then deletes, [story] as it was last loaded. */
+    suspend fun deleteStory(story: Story): Result<Unit>
+}
+
+interface ImageLibraryRepository {
+    suspend fun list(folder: ImageFolder): Result<List<StorageImage>>
+
+    /** Uploads under a new random name in [folder]; never replaces an existing image. */
+    suspend fun upload(folder: ImageFolder, bytes: ByteArray, type: ImageType): Result<StorageImage>
 }
 
 interface NotificationRepository {

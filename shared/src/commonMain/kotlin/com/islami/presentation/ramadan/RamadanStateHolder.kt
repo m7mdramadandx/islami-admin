@@ -4,14 +4,16 @@ import com.islami.core.error.Result
 import com.islami.core.state.StateHolder
 import com.islami.core.usecase.NoParams
 import com.islami.domain.entities.RamadanConflictException
+import com.islami.domain.entities.ImageFolder
 import com.islami.domain.entities.RamadanDay
+import com.islami.domain.usecases.images.ListImagesUseCase
+import com.islami.domain.usecases.images.UploadImageParams
+import com.islami.domain.usecases.images.UploadImageUseCase
 import com.islami.domain.ramadan.changedFrom
 import com.islami.domain.ramadan.validate
-import com.islami.domain.usecases.ramadan.ListRamadanBackgroundsUseCase
 import com.islami.domain.usecases.ramadan.LoadRamadanDaysUseCase
 import com.islami.domain.usecases.ramadan.SaveRamadanDaysParams
 import com.islami.domain.usecases.ramadan.SaveRamadanDaysUseCase
-import com.islami.domain.usecases.ramadan.UploadRamadanBackgroundUseCase
 import com.islami.presentation.components.PickedImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +23,8 @@ import kotlinx.coroutines.launch
 class RamadanStateHolder(
     private val loadDays: LoadRamadanDaysUseCase,
     private val saveDays: SaveRamadanDaysUseCase,
-    private val listBackgrounds: ListRamadanBackgroundsUseCase,
-    private val uploadBackground: UploadRamadanBackgroundUseCase,
+    private val listImages: ListImagesUseCase,
+    private val uploadImage: UploadImageUseCase,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 ) : StateHolder<RamadanState>(RamadanState()) {
 
@@ -62,7 +64,7 @@ class RamadanStateHolder(
 
     fun loadBackgrounds() = scope.launch {
         updateState { it.copy(isLoadingBackgrounds = true) }
-        when (val result = listBackgrounds(NoParams)) {
+        when (val result = listImages(ImageFolder.RAMADAN_BACKGROUNDS)) {
             is Result.Success -> updateState { it.copy(isLoadingBackgrounds = false, backgrounds = result.data) }
             is Result.Error -> updateState {
                 it.copy(isLoadingBackgrounds = false, message = "Couldn't list images: ${result.exception.readable()}")
@@ -81,7 +83,7 @@ class RamadanStateHolder(
         val day = currentState().selected ?: return
         updateState { it.copy(isUploading = true) }
         scope.launch {
-            when (val result = uploadBackground(image.bytes)) {
+            when (val result = uploadImage(UploadImageParams(ImageFolder.RAMADAN_BACKGROUNDS, image.bytes))) {
                 is Result.Success -> {
                     val background = result.data
                     editDay(day.id) { it.copy(backgroundUrl = background.url) }

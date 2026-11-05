@@ -17,7 +17,3 @@ fun List<RamadanDay>.changedFrom(published: List<RamadanDay>): Set<String> {
     val before = published.associateBy { it.id }
     return filter { it != before[it.id] }.map { it.id }.toSet()
 }
-
-/** `islamic_pictures/abc.jpg` from a Storage download URL, to match a day to its picker entry. */
-fun storagePathOf(url: String): String? =
-    url.substringAfter("/o/", "").substringBefore('?').takeIf { it.isNotEmpty() }?.replace("%2F", "/")

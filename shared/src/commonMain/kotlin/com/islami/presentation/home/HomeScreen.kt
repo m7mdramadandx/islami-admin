@@ -2,21 +2,48 @@ package com.islami.presentation.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,10 +55,10 @@ import com.islami.domain.entities.ContentKind
 import com.islami.presentation.components.StarPattern
 import com.islami.presentation.navigation.Navigator
 import com.islami.presentation.navigation.Screen
+import com.islami.presentation.theme.IslamiBrand
 import islami_kmp.shared.generated.resources.Res
 import islami_kmp.shared.generated.resources.ic_app
 import org.jetbrains.compose.resources.painterResource
-import com.islami.presentation.theme.IslamiBrand
 import org.koin.compose.koinInject
 
 /** Keeps lines and cards a readable size on wide monitors. */
@@ -56,6 +83,12 @@ private val features = listOf(
         "The dua, title and background for each day of Ramadan.",
         Icons.Default.DateRange,
         Screen.Ramadan
+    ),
+    Feature(
+        "Stories",
+        "The prophets' stories: cover, title, brief and the full text.",
+        Icons.AutoMirrored.Filled.List,
+        Screen.Stories
     ),
     Feature(
         "Notifications",
@@ -103,7 +136,10 @@ fun HomeScreen(
                 .padding(horizontal = 24.dp, vertical = 28.dp),
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            LiveNow(state, onRefresh = { holder.refresh() }, onOpen = { navigator.navigateTo(Screen.Releases) })
+            LiveNow(
+                state,
+                onRefresh = { holder.refresh() },
+                onOpen = { navigator.navigateTo(Screen.Releases) })
 
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 SectionTitle("Manage")
@@ -116,7 +152,10 @@ fun HomeScreen(
                         features.chunked(columns).forEach { row ->
                             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                                 row.forEach { feature ->
-                                    FeatureCard(feature, Modifier.weight(1f)) { navigator.navigateTo(feature.screen) }
+                                    FeatureCard(
+                                        feature,
+                                        Modifier.weight(1f)
+                                    ) { navigator.navigateTo(feature.screen) }
                                 }
                                 repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
                             }
@@ -143,7 +182,11 @@ fun HomeScreen(
 @Composable
 private fun Header(email: String?, onLogout: () -> Unit) {
     Box(modifier = Modifier.fillMaxWidth().background(IslamiBrand.Forest)) {
-        StarPattern(color = IslamiBrand.Gold.copy(alpha = 0.07f), spacing = 80.dp, modifier = Modifier.matchParentSize())
+        StarPattern(
+            color = IslamiBrand.Gold.copy(alpha = 0.07f),
+            spacing = 80.dp,
+            modifier = Modifier.matchParentSize()
+        )
         Column(
             modifier = Modifier
                 .widthIn(max = MaxContentWidth)
@@ -179,13 +222,21 @@ private fun Header(email: String?, onLogout: () -> Unit) {
                     onClick = onLogout,
                     colors = ButtonDefaults.textButtonColors(contentColor = IslamiBrand.OnForest)
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Icon(
+                        Icons.AutoMirrored.Filled.ExitToApp,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
                     Spacer(Modifier.width(6.dp))
                     Text("Sign out")
                 }
             }
             Spacer(Modifier.height(32.dp))
-            Text("السلام عليكم", style = MaterialTheme.typography.titleLarge, color = IslamiBrand.Gold)
+            Text(
+                "السلام عليكم",
+                style = MaterialTheme.typography.titleLarge,
+                color = IslamiBrand.Gold
+            )
             Spacer(Modifier.height(4.dp))
             Text(
                 "What would you like to manage today?",
@@ -220,8 +271,16 @@ private fun LiveNow(state: HomeState, onRefresh: () -> Unit, onOpen: () -> Unit)
             maxItemsInEachRow = 4
         ) {
             val tile = Modifier.weight(1f).widthIn(min = 150.dp)
-            StatTile("Store version", live?.config?.storeVersion?.ifEmpty { null } ?: placeholder, tile, onOpen)
-            StatTile("Minimum version", live?.config?.minVersion?.ifEmpty { null } ?: placeholder, tile, onOpen)
+            StatTile(
+                "Store version",
+                live?.config?.storeVersion?.ifEmpty { null } ?: placeholder,
+                tile,
+                onOpen)
+            StatTile(
+                "Minimum version",
+                live?.config?.minVersion?.ifEmpty { null } ?: placeholder,
+                tile,
+                onOpen)
             ContentKind.entries.forEach { kind ->
                 StatTile(
                     "${kind.title} file",
@@ -238,9 +297,17 @@ private fun LiveNow(state: HomeState, onRefresh: () -> Unit, onOpen: () -> Unit)
 private fun StatTile(label: String, value: String, modifier: Modifier, onClick: () -> Unit) {
     OutlinedCard(onClick = onClick, modifier = modifier) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
-            Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Spacer(Modifier.height(4.dp))
-            Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
+            Text(
+                value,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }
@@ -261,21 +328,32 @@ private fun FeatureCard(feature: Feature, modifier: Modifier, onClick: () -> Uni
                     .background(colors.primary.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(feature.icon, contentDescription = null, tint = colors.primary)
+                Icon(feature.icon, contentDescription = null, tint = colors.secondary)
             }
             Spacer(Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(feature.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(
+                    feature.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Spacer(Modifier.height(4.dp))
-                Text(feature.description, style = MaterialTheme.typography.bodyMedium, color = colors.onSurfaceVariant)
+                Text(
+                    feature.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.onSurfaceVariant
+                )
             }
-            Spacer(Modifier.width(8.dp))
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = colors.onSurfaceVariant)
         }
     }
 }
 
 @Composable
 private fun SectionTitle(text: String, modifier: Modifier = Modifier) {
-    Text(text, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, modifier = modifier)
+    Text(
+        text,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.SemiBold,
+        modifier = modifier
+    )
 }

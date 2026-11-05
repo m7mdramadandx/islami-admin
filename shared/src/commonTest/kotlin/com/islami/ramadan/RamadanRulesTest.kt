@@ -1,20 +1,13 @@
 package com.islami.ramadan
 
 import com.islami.core.error.Result
-import com.islami.domain.entities.RamadanBackground
 import com.islami.domain.entities.RamadanDay
-import com.islami.domain.ramadan.BackgroundImageType
-import com.islami.domain.ramadan.MAX_BACKGROUND_BYTES
-import com.islami.domain.ramadan.backgroundUploadProblem
 import com.islami.domain.ramadan.changedFrom
-import com.islami.domain.ramadan.detectBackgroundType
 import com.islami.domain.ramadan.ramadanDayName
-import com.islami.domain.ramadan.storagePathOf
 import com.islami.domain.ramadan.validate
 import com.islami.domain.repositories.RamadanRepository
 import com.islami.domain.usecases.ramadan.SaveRamadanDaysParams
 import com.islami.domain.usecases.ramadan.SaveRamadanDaysUseCase
-import com.islami.domain.usecases.ramadan.UploadRamadanBackgroundUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -64,13 +57,6 @@ class RamadanRulesTest {
     }
 
     @Test
-    fun storagePathIsReadFromDownloadUrls() {
-        val url = "https://firebasestorage.googleapis.com/v0/b/islami-ecc03.appspot.com/o/islamic_pictures%2F0c73.jpg?alt=media&token=9f13"
-        assertEquals("islamic_pictures/0c73.jpg", storagePathOf(url))
-        assertEquals(null, storagePathOf(""))
-    }
-
-    @Test
     fun saveSendsOnlyTheEditedDays() = runTest {
         val repo = RecordingRepository()
         val edited = published.map { if (it.dayNumber == 4) it.copy(dua = "جديد") else it }
@@ -87,53 +73,12 @@ class RamadanRulesTest {
         assertTrue(repo.saved.isEmpty())
     }
 
-    private fun bytes(vararg values: Int) = ByteArray(values.size) { values[it].toByte() }
-
-    private val jpeg = bytes(0xFF, 0xD8, 0xFF, 0xE0, 0, 0x10)
-    private val png = bytes(0x89, 'P'.code, 'N'.code, 'G'.code, 0x0D, 0x0A)
-    private val webp = "RIFF".encodeToByteArray() + ByteArray(4) + "WEBPVP8 ".encodeToByteArray()
-
-    @Test
-    fun detectsFormatsFromFileSignatures() {
-        assertEquals(BackgroundImageType.JPEG, detectBackgroundType(jpeg))
-        assertEquals(BackgroundImageType.PNG, detectBackgroundType(png))
-        assertEquals(BackgroundImageType.WEBP, detectBackgroundType(webp))
-        assertEquals(null, detectBackgroundType("GIF89a".encodeToByteArray()))
-        assertEquals(null, detectBackgroundType(ByteArray(2)))
-    }
-
-    @Test
-    fun rejectsEmptyUnknownAndOversizedFiles() {
-        assertEquals(null, backgroundUploadProblem(jpeg))
-        assertTrue(backgroundUploadProblem(ByteArray(0))!!.contains("empty"))
-        assertTrue(backgroundUploadProblem("hello".encodeToByteArray())!!.contains("JPEG, PNG or WebP"))
-        val big = jpeg + ByteArray(MAX_BACKGROUND_BYTES)
-        assertTrue(backgroundUploadProblem(big)!!.contains("1.0 MB"))
-    }
-
-    @Test
-    fun badFilesNeverReachStorage() = runTest {
-        val repo = RecordingRepository()
-        val result = UploadRamadanBackgroundUseCase(repo)("not an image".encodeToByteArray())
-        assertTrue(result is Result.Error)
-        assertEquals(null, repo.uploadedType)
-
-        UploadRamadanBackgroundUseCase(repo)(png)
-        assertEquals(BackgroundImageType.PNG, repo.uploadedType)
-    }
-
     private class RecordingRepository : RamadanRepository {
         var saved: List<RamadanDay> = emptyList()
-        var uploadedType: BackgroundImageType? = null
         override suspend fun loadDays(): Result<List<RamadanDay>> = Result.Success(emptyList())
         override suspend fun saveDays(changed: List<RamadanDay>, base: List<RamadanDay>, overwrite: Boolean): Result<List<RamadanDay>> {
             saved = changed
             return Result.Success(base)
-        }
-        override suspend fun listBackgrounds(): Result<List<RamadanBackground>> = Result.Success(emptyList())
-        override suspend fun uploadBackground(bytes: ByteArray, type: BackgroundImageType): Result<RamadanBackground> {
-            uploadedType = type
-            return Result.Success(RamadanBackground("islamic_pictures/x.${type.extension}", "https://x"))
         }
     }
 }

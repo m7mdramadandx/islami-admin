@@ -12,6 +12,7 @@ sealed class Screen {
     data object Content : Screen()
     data object Releases : Screen()
     data object Ramadan : Screen()
+    data object Stories : Screen()
 }
 
 class Navigator(initialScreen: Screen = Screen.Login) {

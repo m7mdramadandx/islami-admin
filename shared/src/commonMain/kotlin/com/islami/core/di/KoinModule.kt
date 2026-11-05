@@ -11,6 +11,8 @@ import com.islami.domain.usecases.feedback.*
 import com.islami.domain.usecases.content.*
 import com.islami.domain.usecases.release.*
 import com.islami.domain.usecases.ramadan.*
+import com.islami.domain.usecases.images.*
+import com.islami.domain.usecases.stories.*
 import com.islami.domain.usecases.notifications.*
 import com.islami.presentation.auth.*
 import com.islami.presentation.home.*
@@ -19,6 +21,7 @@ import com.islami.presentation.notifications.*
 import com.islami.presentation.content.*
 import com.islami.presentation.release.*
 import com.islami.presentation.ramadan.*
+import com.islami.presentation.stories.*
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
@@ -44,7 +47,9 @@ fun commonModule(): Module = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<FeedbackRepository> { FeedbackRepositoryImpl(firestore = get()) }
     single { ContentDraftStore(get()) }
-    single<RamadanRepository> { RamadanRepositoryImpl(firestore = get(), storage = get()) }
+    single<RamadanRepository> { RamadanRepositoryImpl(firestore = get()) }
+    single<ImageLibraryRepository> { ImageLibraryRepositoryImpl(storage = get()) }
+    single<StoriesRepository> { StoriesRepositoryImpl(firestore = get(), storage = get()) }
     single<AppReleaseRepository> { AppReleaseRepositoryImpl(firestore = get(), firestoreClient = get(), auth = get()) }
     single<ContentRepository> { ContentRepositoryImpl(storage = get(), firestore = get()) }
     single<NotificationRepository> { NotificationRepositoryImpl(get(), get()) }
@@ -57,8 +62,12 @@ fun commonModule(): Module = module {
     single { DeleteFeedbackMessageUseCase(get()) }
     single { LoadRamadanDaysUseCase(get()) }
     single { SaveRamadanDaysUseCase(get()) }
-    single { ListRamadanBackgroundsUseCase(get()) }
-    single { UploadRamadanBackgroundUseCase(get()) }
+    single { ListImagesUseCase(get()) }
+    single { LoadStoriesUseCase(get()) }
+    single { SaveStoryUseCase(get()) }
+    single { CreateStoryUseCase(get()) }
+    single { DeleteStoryUseCase(get()) }
+    single { UploadImageUseCase(get()) }
     single { LoadAppReleaseUseCase(get()) }
     single { SaveAppReleaseUseCase(get()) }
     single { ListAppReleaseHistoryUseCase(get()) }
@@ -77,19 +86,15 @@ fun commonModule(): Module = module {
     factory { NotificationStateHolder(get()) }
     factory { AppReleaseStateHolder(get(), get(), get(), get()) }
     factory { RamadanStateHolder(get(), get(), get(), get()) }
+    factory { StoriesStateHolder(get(), get(), get(), get(), get(), get()) }
     // One editor per file; the screen keeps both alive so switching tabs keeps unsaved edits.
     factory { (kind: ContentKind) -> ContentEditorStateHolder(kind, get(), get(), get(), get(), get(), get()) }
 }
 
-/**
- * Platform-specific module that must be defined in each platform
- */
+/** Defined by each platform (local storage and the like). */
 expect fun platformModule(): Module
 
-/**
- * Initialize all KMP modules
- * Call this from platform-specific entry points (Android, iOS, Web)
- */
+/** All modules; started from each platform's entry point. */
 fun initializeKoinModules(): List<Module> = listOf(
     commonModule(),
     platformModule()

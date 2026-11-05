@@ -3,19 +3,14 @@ package com.islami.presentation.ramadan
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
@@ -32,9 +27,8 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.islami.domain.entities.RamadanDay
-import com.islami.domain.ramadan.storagePathOf
 import com.islami.presentation.components.RemoteImage
-import com.islami.presentation.components.rememberImagePicker
+import com.islami.presentation.components.ImageLibraryDialog
 import com.islami.presentation.navigation.Navigator
 import org.koin.compose.koinInject
 
@@ -424,80 +418,17 @@ private fun DayPreview(day: RamadanDay, modifier: Modifier = Modifier) {
 // region Dialogs
 
 @Composable
-private fun UploadButton(state: RamadanState, holder: RamadanStateHolder) {
-    val pickImage = rememberImagePicker(holder::onImagePicked)
-    FilledTonalButton(onClick = pickImage, enabled = !state.isUploading && !state.isSaving) {
-        if (state.isUploading) {
-            CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp)
-            Spacer(Modifier.width(8.dp))
-            Text("Uploading…")
-        } else {
-            Text("Upload new image")
-        }
-    }
-}
-
-@Composable
 private fun BackgroundPicker(state: RamadanState, holder: RamadanStateHolder) {
-    val current = state.selected?.backgroundUrl.orEmpty()
-    val currentPath = storagePathOf(current)
-    AlertDialog(
-        onDismissRequest = holder::dismissPicker,
-        title = { Text("Choose a background") },
-        text = {
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        "Images in Storage islamic_pictures/. JPEG, PNG or WebP up to 1 MB; portrait (9:16) fits the app best.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    UploadButton(state, holder)
-                }
-                Spacer(Modifier.height(12.dp))
-                val backgrounds = state.backgrounds
-                when {
-                    backgrounds == null || (state.isLoadingBackgrounds && backgrounds.isEmpty()) ->
-                        Box(Modifier.fillMaxWidth().height(200.dp), Alignment.Center) { CircularProgressIndicator() }
-                    backgrounds.isEmpty() -> Text("No images found.")
-                    else -> LazyVerticalGrid(
-                        columns = GridCells.Adaptive(96.dp),
-                        modifier = Modifier.heightIn(max = 480.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(backgrounds, key = { it.path }) { background ->
-                            val selected = background.path == currentPath
-                            Box(
-                                Modifier
-                                    .aspectRatio(9f / 16f)
-                                    .clip(MaterialTheme.shapes.small)
-                                    .border(
-                                        if (selected) BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
-                                        else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                                        MaterialTheme.shapes.small
-                                    )
-                                    .clickable { holder.chooseBackground(background.url) }
-                            ) {
-                                RemoteImage(url = background.url, contentDescription = background.path, maxWidth = 240, modifier = Modifier.matchParentSize())
-                                if (selected) {
-                                    Icon(
-                                        Icons.Default.Check, contentDescription = "Current",
-                                        tint = MaterialTheme.colorScheme.onPrimary,
-                                        modifier = Modifier.align(Alignment.TopEnd).padding(4.dp)
-                                            .clip(CircleShape).background(MaterialTheme.colorScheme.primary).padding(2.dp).size(16.dp)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        // Picking applies right away (as an unsaved edit), so the dialog only needs a way out.
-        confirmButton = { TextButton(onClick = holder::dismissPicker) { Text("Done") } }
+    ImageLibraryDialog(
+        title = "Choose a background",
+        hint = "Images in Storage islamic_pictures/. JPEG, PNG or WebP up to 1 MB; portrait (9:16) fits the app best.",
+        images = state.backgrounds?.takeUnless { state.isLoadingBackgrounds && it.isEmpty() },
+        selectedUrl = state.selected?.backgroundUrl.orEmpty(),
+        aspectRatio = 9f / 16f,
+        isUploading = state.isUploading,
+        onPick = { holder.chooseBackground(it.url) },
+        onImagePicked = holder::onImagePicked,
+        onDismiss = holder::dismissPicker
     )
 }
 

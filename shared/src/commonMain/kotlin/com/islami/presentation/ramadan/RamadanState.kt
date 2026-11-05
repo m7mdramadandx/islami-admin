@@ -1,6 +1,6 @@
 package com.islami.presentation.ramadan
 
-import com.islami.domain.entities.RamadanBackground
+import com.islami.domain.entities.StorageImage
 import com.islami.domain.entities.RamadanDay
 import com.islami.domain.ramadan.RamadanIssue
 
@@ -14,7 +14,7 @@ data class RamadanState(
     val issues: List<RamadanIssue> = emptyList(),
     val changedIds: Set<String> = emptySet(),
     /** Null until the picker is first opened. */
-    val backgrounds: List<RamadanBackground>? = null,
+    val backgrounds: List<StorageImage>? = null,
     val isLoadingBackgrounds: Boolean = false,
     val pickerOpen: Boolean = false,
     val isUploading: Boolean = false,

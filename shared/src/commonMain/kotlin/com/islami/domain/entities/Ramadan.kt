@@ -2,11 +2,7 @@ package com.islami.domain.entities
 
 import com.islami.domain.ramadan.ramadanDayName
 
-/**
- * One document in `root/ar/ramadan` (ids `01`..`30`). The app loads the collection in id order and
- * shows the entry at index (Hijri day - 1) on its Ramadan duas screen, so documents are only ever
- * edited, never added, removed or renamed.
- */
+/** A day in `root/ar/ramadan` (`01`..`30`); the app picks it by position, so days are only edited. */
 data class RamadanDay(
     val id: String,
     val dua: String,
@@ -19,12 +15,6 @@ data class RamadanDay(
     /** The title the app shows for this day; it comes from code, not the database. */
     val title: String get() = ramadanDayName(dayNumber) ?: "Day $dayNumber"
 }
-
-data class RamadanBackground(
-    /** Storage path, e.g. `islamic_pictures/0c73e1c5....jpg`. */
-    val path: String,
-    val url: String
-)
 
 /** Another admin saved one of the edited days after it was loaded. */
 class RamadanConflictException(val days: List<Int>) :

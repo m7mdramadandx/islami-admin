@@ -45,4 +45,7 @@ interface FirebaseStorageClient {
 
     /** Full paths of the files directly inside [folder]. */
     suspend fun list(folder: String): Result<List<String>>
+
+    /** Public, token-bearing URL for [path]; what the mobile app stores to show an image. */
+    suspend fun downloadUrl(path: String): Result<String>
 }

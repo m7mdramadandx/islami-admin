@@ -19,6 +19,7 @@ import com.islami.presentation.feedback.FeedbackScreen
 import com.islami.presentation.notifications.NotificationScreen
 import com.islami.presentation.content.ContentScreen
 import com.islami.presentation.release.AppReleaseScreen
+import com.islami.presentation.ramadan.RamadanScreen
 import com.islami.presentation.navigation.Screen
 import com.islami.presentation.navigation.rememberNavigator
 import com.islami.presentation.theme.IslamiTheme
@@ -57,6 +58,7 @@ fun App() {
                     is Screen.Notifications -> NotificationScreen(navigator)
                     is Screen.Content -> ContentScreen(navigator)
                     is Screen.Releases -> AppReleaseScreen(navigator)
+                    is Screen.Ramadan -> RamadanScreen(navigator)
                 }
             }
         }

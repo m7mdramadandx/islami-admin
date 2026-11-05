@@ -2,6 +2,7 @@ package com.islami.domain.repositories
 
 import com.islami.core.error.Result
 import com.islami.domain.entities.*
+import com.islami.domain.ramadan.BackgroundImageType
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -48,6 +49,22 @@ interface AppReleaseRepository {
     suspend fun save(config: AppReleaseConfig, base: AppReleaseConfig, overwrite: Boolean): Result<AppReleaseSnapshot>
 
     suspend fun history(): Result<List<AppReleaseHistoryEntry>>
+}
+
+interface RamadanRepository {
+    suspend fun loadDays(): Result<List<RamadanDay>>
+
+    /**
+     * Writes the [changed] days in one batch. Fails with
+     * [com.islami.domain.entities.RamadanConflictException] if any of them no longer match [base],
+     * unless [overwrite] is set.
+     */
+    suspend fun saveDays(changed: List<RamadanDay>, base: List<RamadanDay>, overwrite: Boolean): Result<List<RamadanDay>>
+
+    suspend fun listBackgrounds(): Result<List<RamadanBackground>>
+
+    /** Uploads to Storage `islamic_pictures/` under a new random name. */
+    suspend fun uploadBackground(bytes: ByteArray, type: BackgroundImageType): Result<RamadanBackground>
 }
 
 interface NotificationRepository {

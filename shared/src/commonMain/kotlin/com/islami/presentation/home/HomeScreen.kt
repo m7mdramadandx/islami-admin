@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Refresh
@@ -49,6 +50,12 @@ private val features = listOf(
         "Edit the azkar and duas the app downloads. Every publish is backed up.",
         Icons.Default.Star,
         Screen.Content
+    ),
+    Feature(
+        "Ramadan Duas",
+        "The dua, title and background for each day of Ramadan.",
+        Icons.Default.DateRange,
+        Screen.Ramadan
     ),
     Feature(
         "Notifications",

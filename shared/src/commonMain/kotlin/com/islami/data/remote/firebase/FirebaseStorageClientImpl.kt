@@ -41,6 +41,10 @@ class FirebaseStorageClientImpl(
         storage.reference(folder).listAll().items.map { it.path }
     }
 
+    override suspend fun downloadUrl(path: String): Result<String> = attempt {
+        storage.reference(path).getDownloadUrl()
+    }
+
     private inline fun <T> attempt(block: () -> T): Result<T> = try {
         Result.Success(block())
     } catch (e: CancellationException) {

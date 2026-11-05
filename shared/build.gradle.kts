@@ -57,6 +57,7 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.gitlive.firebase.crashlytics)
             implementation(libs.androidx.core)
+            implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.datastore.preferences)
         }
 

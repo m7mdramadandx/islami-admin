@@ -1,6 +1,7 @@
 package com.islami.core.di
 
 import com.islami.data.local.ContentDraftStore
+import com.islami.data.remote.RemoteImageLoader
 import com.islami.data.remote.firebase.*
 import com.islami.data.repository.*
 import com.islami.domain.entities.ContentKind
@@ -9,6 +10,7 @@ import com.islami.domain.usecases.auth.*
 import com.islami.domain.usecases.feedback.*
 import com.islami.domain.usecases.content.*
 import com.islami.domain.usecases.release.*
+import com.islami.domain.usecases.ramadan.*
 import com.islami.domain.usecases.notifications.*
 import com.islami.presentation.auth.*
 import com.islami.presentation.home.*
@@ -16,6 +18,7 @@ import com.islami.presentation.feedback.*
 import com.islami.presentation.notifications.*
 import com.islami.presentation.content.*
 import com.islami.presentation.release.*
+import com.islami.presentation.ramadan.*
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
@@ -35,11 +38,13 @@ fun commonModule(): Module = module {
     single<FirebaseAuthClient> { FirebaseAuthClientImpl(get()) }
     single<FirebaseFirestoreClient> { FirebaseFirestoreClientImpl(get()) }
     single<FirebaseStorageClient> { FirebaseStorageClientImpl(get()) }
+    single { RemoteImageLoader() }
 
     // Repositories
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<FeedbackRepository> { FeedbackRepositoryImpl(firestore = get()) }
     single { ContentDraftStore(get()) }
+    single<RamadanRepository> { RamadanRepositoryImpl(firestore = get(), storage = get()) }
     single<AppReleaseRepository> { AppReleaseRepositoryImpl(firestore = get(), firestoreClient = get(), auth = get()) }
     single<ContentRepository> { ContentRepositoryImpl(storage = get(), firestore = get()) }
     single<NotificationRepository> { NotificationRepositoryImpl(get(), get()) }
@@ -50,6 +55,10 @@ fun commonModule(): Module = module {
     single { GetCurrentUserUseCase(get()) }
     single { ObserveFeedbackMessagesUseCase(get()) }
     single { DeleteFeedbackMessageUseCase(get()) }
+    single { LoadRamadanDaysUseCase(get()) }
+    single { SaveRamadanDaysUseCase(get()) }
+    single { ListRamadanBackgroundsUseCase(get()) }
+    single { UploadRamadanBackgroundUseCase(get()) }
     single { LoadAppReleaseUseCase(get()) }
     single { SaveAppReleaseUseCase(get()) }
     single { ListAppReleaseHistoryUseCase(get()) }
@@ -67,6 +76,7 @@ fun commonModule(): Module = module {
     factory { FeedbackStateHolder(get(), get()) }
     factory { NotificationStateHolder(get()) }
     factory { AppReleaseStateHolder(get(), get(), get(), get()) }
+    factory { RamadanStateHolder(get(), get(), get(), get()) }
     // One editor per file; the screen keeps both alive so switching tabs keeps unsaved edits.
     factory { (kind: ContentKind) -> ContentEditorStateHolder(kind, get(), get(), get(), get(), get(), get()) }
 }
